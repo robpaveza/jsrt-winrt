@@ -1,0 +1,25 @@
+﻿<Page
+    x:Class="TestHost.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:TestHost"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    RequestedTheme="Dark"
+    mc:Ignorable="d">
+
+    <Page.DataContext>
+        <local:HomeViewModel />
+    </Page.DataContext>
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Button HorizontalAlignment="Stretch" Margin="5" Command="{Binding RunCommand}" IsEnabled="{Binding CanRun}">Make it happen</Button>
+        <ScrollContentPresenter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <ListBox ItemsSource="{Binding Text}"></ListBox>
+        </ScrollContentPresenter>
+    </Grid>
+</Page>

@@ -28,12 +28,15 @@ int32 JavaScriptArray::Length::get()
 
 IJavaScriptValue^ JavaScriptArray::GetAt(int32 index)
 {
-    return nullptr;
+    JsValueRef resultRef;
+    ObjCheckForFailure1(JsGetIndexedProperty(handle_, GetHandleFromVar(engine_->Converter->FromDouble(index)), &resultRef));
+
+    return engine_->CreateValueFromHandle(resultRef);
 }
 
 void JavaScriptArray::SetAt(int32 index, IJavaScriptValue^ value)
 {
-
+    ObjCheckForFailure1(JsSetIndexedProperty(handle_, GetHandleFromVar(engine_->Converter->FromDouble(index)), GetHandleFromVar(value)));
 }
 
 IJavaScriptValue^ JavaScriptArray::Pop()

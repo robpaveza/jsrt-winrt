@@ -210,7 +210,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\..\Rob%27s OneDrive\OneDrive\JsRT for .NET\CX\Microsoft.Scripting\Microsoft.Scripting\Errors.h" />
+    <ClInclude Include="Errors.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="JavaScriptPrimitiveValue.h" />
     <ClInclude Include="JavaScriptArray.h" />
@@ -224,8 +224,8 @@
     <ClInclude Include="ScriptSource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\..\Rob%27s OneDrive\OneDrive\JsRT for .NET\CX\Microsoft.Scripting\Microsoft.Scripting\Errors.cpp" />
-    <ClCompile Include="..\..\..\..\..\..\Rob%27s OneDrive\OneDrive\JsRT for .NET\CX\Microsoft.Scripting\Microsoft.Scripting\ScriptSource.cpp" />
+    <ClCompile Include="Errors.cpp" />
+    <ClCompile Include="ScriptSource.cpp" />
     <ClCompile Include="JavaScriptConverter.cpp" />
     <ClCompile Include="JavaScriptEngine.cpp" />
     <ClCompile Include="JavaScriptFunction.cpp" />

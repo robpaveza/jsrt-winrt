@@ -14,6 +14,9 @@ namespace Microsoft
 
         namespace JavaScript
         {
+            /// <summary>
+            /// The "type" of a value, aligned with the JavaScript Language definition of "type".
+            /// </summary>
             [MD::WebHostHidden]
             public enum class JavaScriptValueType
             {
@@ -36,81 +39,185 @@ namespace Microsoft
             ref class JavaScriptArray;
             ref class JavaScriptFunction;
 
+            /// <summary>
+            /// Represents any JavaScript variable.  JavaScript primitives are only accessible via this interface.
+            /// </summary>
+            /// <remarks>This interface is not intended to be implemented by user code.  It is only provided because 
+            ///    many types may polymorph over it.</remarks>
             [MD::WebHostHidden]
             public interface class IJavaScriptValue :
                 public IStringable
             {
+                /// <summary>
+                /// Gets the kind of value this variable is.
+                /// </summary>
                 property JavaScriptValueType Type
                 {
                     JavaScriptValueType get();
                 }
 
+                /// <summary>
+                /// Gets whether this variable is truthy.
+                /// </summary>
                 property bool IsTruthy
                 {
                     bool get();
                 }
 
+                /// <summary>
+                /// Gets a reference to the engine that owns this value.
+                /// </summary>
                 property JavaScriptEngine^ Engine
                 {
                     JavaScriptEngine^ get();
                 }
 
+                /// <summary>
+                /// Gets the native handle (a <c>JsValueRef</c>).
+                /// </summary>
+                /// <remarks> You should not use this unless you absolutely know what you are doing. </remarks>
                 property IntPtr Handle
                 {
                     IntPtr get();
                 }
 
+                /// <summary>
+                /// Tests whether two variables are equal, permitting coercion (equivalent to the JavaScript <c>==</c> operator). 
+                /// The variables must be from the same engine.
+                /// </summary>
                 bool SimpleEquals(IJavaScriptValue^ other);
+                /// <summary>
+                /// Tests whether two variables are equal, excluding coercion (equivalent to the JavaScript <c>===</c> operator). 
+                /// The variables must be from the same engine.
+                /// </summary>
                 bool StrictEquals(IJavaScriptValue^ other);
             };
 
+            /// <summary>
+            /// Represents a JavaScript variable which is an Object or higher in the type hierarchy.
+            /// </summary>
             [MD::WebHostHidden]
             public interface class IJavaScriptObject :
                 public IJavaScriptValue
             {
             public:
+                /// <summary>
+                /// Gets an array of strings representing the names of own properties (equivalent to calling <c>Object.keys()</c> 
+                /// passing in this object as the target).
+                /// </summary>
                 property JavaScriptArray^ Keys
                 {
                     JavaScriptArray^ get();
                 }
+                /// <summary>
+                /// Gets whether additional properties may be added to this object.
+                /// </summary>
                 property bool IsExtensible
                 {
                     bool get();
                 }
+                /// <summary>
+                /// Gets or sets the object which is this object's prototype (equivalent to accessing <c>__proto__</c>).
+                /// </summary>
                 property IJavaScriptObject^ Prototype
                 {
                     IJavaScriptObject^ get();
                     void set(IJavaScriptObject^ value);
                 }
+                /// <summary>
+                /// Gets whether this object is sealed (from calling <c>Object.seal()</c>).
+                /// </summary>
                 property bool IsSealed
                 {
                     bool get();
                 }
+
+                /// <summary>
+                /// Gets whether this object is frozen (from calling <c>Object.freeze()</c>).
+                /// </summary>
                 property bool IsFrozen
                 {
                     bool get();
                 }
 
+                /// <summary>
+                /// Gets whether this object is the prototype of another object.
+                /// </summary>
                 bool IsPrototypeOf(IJavaScriptObject^ other);
+                /// <summary>
+                /// Gets whether a particular named property is enumerable on this object.
+                /// </summary>
                 bool PropertyIsEnumerable(String^ propertyName);
 
+                /// <summary>
+                /// Gets a property by name.
+                /// </summary>
                 IJavaScriptValue^ GetPropertyByName(String^ propertyName);
+                /// <summary>
+                /// Sets a property by name.
+                /// </summary>
                 void SetPropertyByName(String^ propertyName, IJavaScriptValue^ value);
+                /// <summary>
+                /// Deletes a property by name.
+                /// </summary>
                 void DeletePropertyByName(String^ propertyName);
+                /// <summary>
+                /// Gets a value at an index.
+                /// </summary>
                 IJavaScriptValue^ GetValueAtIndex(IJavaScriptValue^ index);
+                /// <summary>
+                /// Sets a value at an index.
+                /// </summary>
                 void SetValueAtIndex(IJavaScriptValue^ index, IJavaScriptValue^ value);
+                /// <summary>
+                /// Deletes a value at an index.
+                /// </summary>
                 void DeleteValueAtIndex(IJavaScriptValue^ index);
+                /// <summary>
+                /// Determines whether an object has an own property (not inherited from its prototype chain).
+                /// </summary>
                 bool HasOwnProperty(String^ propertyName);
+                /// <summary>
+                /// Determines whether an object has a property, inherited or not.
+                /// </summary>
                 bool HasProperty(String^ propertyName);
+                /// <summary>
+                /// Gets an own-property's descriptor, if present.
+                /// </summary>
                 JavaScriptObject^ GetOwnPropertyDescriptor(String^ propertyName);
+                /// <summary>
+                /// Defines a property (equivalent to <c>Object.defineProperty</c>).
+                /// </summary>
                 void DefineProperty(String^ propertyName, IJavaScriptObject^ descriptor);
+                /// <summary>
+                /// Defines multiple properties (equivalent to <c>Object.defineProperties</c>).
+                /// </summary>
                 void DefineProperties(IJavaScriptObject^ propertiesContainer);
+                /// <summary>
+                /// Gets an array of own-property names.
+                /// </summary>
                 JavaScriptArray^ GetOwnPropertyNames();
+                /// <summary>
+                /// Prevents the addition of properties to the object.
+                /// </summary>
                 void PreventExtensions();
+                /// <summary>
+                /// Seals the object (such as <c>Object.seal</c>).
+                /// </summary>
                 void Seal();
+                /// <summary>
+                /// Freezes the object (such as <c>Object.freeze</c>).
+                /// </summary>
                 void Freeze();
             };
 
+            /// <summary>
+            /// A host-provided native function which may be called from a script engine.
+            /// </summary>
+            /// <param name="callingEngine">The engine which is calling to the host.</param>
+            /// <param name="asConstructor">Whether the function is being called as a constructor (such as <c>new Foo()</c>).</param>
+            /// <param name="thisValue">An object context being passed as <c>this</c>, if any.</param>
+            /// <param name="arguments">Arguments being passed to the function.</param>
             [MD::WebHostHidden]
             public delegate IJavaScriptValue^ JavaScriptCallableFunction(
                 JavaScriptEngine^ callingEngine,
@@ -119,6 +226,10 @@ namespace Microsoft
                 IIterable<IJavaScriptValue^>^ arguments
                 );
 
+            /// <summary>
+            /// A host-provided native function called when an external object is finalized.
+            /// </summary>
+            /// <param name="arguments">An object passed to <c>CreateExternalObject</c>.</param>
             [MD::WebHostHidden]
             public delegate void JavaScriptExternalObjectFinalizeCallback(
                 Object^ additionalData);

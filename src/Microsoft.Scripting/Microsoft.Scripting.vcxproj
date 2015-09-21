@@ -127,7 +127,6 @@
       <DisableSpecificWarnings>28204</DisableSpecificWarnings>
       <PreprocessToFile>false</PreprocessToFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
-      <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

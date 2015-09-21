@@ -12,6 +12,9 @@ namespace Microsoft
     {
         namespace JavaScript
         {
+            /// <summary>
+            /// Provides the runtime and used for running JavaScript code.
+            /// </summary>
             [MD::WebHostHidden]
             public ref class JavaScriptRuntime sealed
             {
@@ -20,13 +23,39 @@ namespace Microsoft
                 JsRuntimeHandle runtime_;
 
             public:
+                /// <summary>
+                /// Creates a new <c>JavaScriptRuntime</c> with the given settings.
+                /// </summary>
+                /// <param name="settings">Settings which dictate how the runtime should behave.</param>
                 JavaScriptRuntime(JavaScriptRuntimeSettings^ settings);
+                /// <summary>
+                /// Releases native resources owned by the runtime.
+                /// </summary>
                 virtual ~JavaScriptRuntime();
+
+                /// <summary>
+                /// Causes the runtime to schedule a garbage collection.
+                /// </summary>
                 void CollectGarbage();
+
+                /// <summary>
+                /// Creates a new <c>JavaScriptEngine</c> within the current runtime.
+                /// </summary>
                 JavaScriptEngine^ CreateEngine();
+
+                /// <summary>
+                /// Allows the runtime to re-enable execution after it has been disabled.
+                /// </summary>
                 void EnableExecution();
+                /// <summary>
+                /// Disables execution or usage of any part of the runtime.  Only functions if the engine was created with the 
+                /// <c>AllowScriptInterrupt</c> property was enabled.
+                /// </summary>
                 void DisableExecution();
 
+                /// <summary>
+                /// Gets the amount of memory used by the runtime.
+                /// </summary>
                 property int64 RuntimeMemoryUsage 
                 {
                     int64 get()
@@ -42,6 +71,9 @@ namespace Microsoft
                     }
                 }
 
+                /// <summary>
+                /// Gets whether execution is presently enabled on the runtime.
+                /// </summary>
                 property bool IsExecutionEnabled
                 {
                     bool get()

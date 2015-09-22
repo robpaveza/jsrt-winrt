@@ -127,6 +127,7 @@
       <DisableSpecificWarnings>28204</DisableSpecificWarnings>
       <PreprocessToFile>false</PreprocessToFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <XMLDocumentationFileName>$(OutDir)Microsoft.Scripting.xml</XMLDocumentationFileName>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

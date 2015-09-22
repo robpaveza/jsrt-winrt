@@ -5,6 +5,7 @@
 #include "JavaScriptEngine.h"
 #include "JavaScriptFunction.h"
 #include "JavaScriptConverter.h"
+#include "JavaScriptSymbol.h"
 
 using namespace Platform::Collections;
 using namespace Microsoft::Scripting::JavaScript;
@@ -56,7 +57,8 @@ IJavaScriptValue^ JavaScriptObject::GetPropertyByName(String^ propertyName)
     ObjCheckForFailure(JsGetPropertyIdFromName(propertyName->Begin(), &propertyId));
 
     JsValueRef resultRef;
-    ObjCheckForFailure(JsGetProperty(handle_, propertyId, &resultRef));
+    jsErr = JsGetProperty(handle_, propertyId, &resultRef);
+    ObjCheckForFailure(jsErr);
     return engine_->CreateValueFromHandle(resultRef);
 }
 
@@ -80,6 +82,43 @@ void JavaScriptObject::DeletePropertyByName(String^ propertyName)
     JsPropertyIdRef propertyId;
     JsErrorCode jsErr;
     ObjCheckForFailure(JsGetPropertyIdFromName(propertyName->Begin(), &propertyId));
+    JsValueRef tmpResult;
+    ObjCheckForFailure(JsDeleteProperty(handle_, propertyId, false, &tmpResult));
+}
+
+IJavaScriptValue^ JavaScriptObject::GetPropertyBySymbol(JavaScriptSymbol^ symbol)
+{
+    engine_->ClaimContext();
+
+    JsPropertyIdRef propertyId;
+    JsErrorCode jsErr;
+    ObjCheckForFailure(JsGetPropertyIdFromSymbol(GetHandleFromVar(symbol), &propertyId));
+
+    JsValueRef resultRef;
+    ObjCheckForFailure(JsGetProperty(handle_, propertyId, &resultRef));
+    return engine_->CreateValueFromHandle(resultRef);
+}
+
+void JavaScriptObject::SetPropertyBySymbol(JavaScriptSymbol^ symbol, IJavaScriptValue^ value)
+{
+    engine_->ClaimContext();
+    if (value == nullptr)
+        value = engine_->NullValue;
+
+    JsValueRef valueToSet = GetHandleFromVar(value);
+    JsPropertyIdRef propertyId;
+    JsErrorCode jsErr;
+    ObjCheckForFailure(JsGetPropertyIdFromSymbol(GetHandleFromVar(symbol), &propertyId));
+    ObjCheckForFailure(JsSetProperty(handle_, propertyId, valueToSet, false));
+}
+
+void JavaScriptObject::DeletePropertyBySymbol(JavaScriptSymbol^ symbol)
+{
+    engine_->ClaimContext();
+
+    JsPropertyIdRef propertyId;
+    JsErrorCode jsErr;
+    ObjCheckForFailure(JsGetPropertyIdFromSymbol(GetHandleFromVar(symbol), &propertyId));
     JsValueRef tmpResult;
     ObjCheckForFailure(JsDeleteProperty(handle_, propertyId, false, &tmpResult));
 }
@@ -188,6 +227,16 @@ JavaScriptArray^ JavaScriptObject::GetOwnPropertyNames()
 
     JsValueRef resultRef;
     ObjCheckForFailure1(JsGetOwnPropertyNames(handle_, &resultRef));
+
+    return engine_->CreateArrayFromHandle(resultRef);
+}
+
+JavaScriptArray^ JavaScriptObject::GetOwnPropertySymbols()
+{
+    engine_->ClaimContext();
+
+    JsValueRef resultRef;
+    ObjCheckForFailure1(JsGetOwnPropertySymbols(handle_, &resultRef));
 
     return engine_->CreateArrayFromHandle(resultRef);
 }

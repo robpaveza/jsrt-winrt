@@ -100,6 +100,10 @@ String^ JavaScriptConverter::ToString(IJavaScriptValue^ value)
         ObjCheckForFailure(JsStringToPointer(strRef, &str, &strLen));
         result = ref new String(str, strLen);
     }
+    else if (value->Type == JavaScriptValueType::Symbol)
+    {
+        result = L"(Symbol)";
+    }
     else
     {
         ObjCheckForFailure(JsConvertValueToString(GetHandleFromVar(value), &strRef));

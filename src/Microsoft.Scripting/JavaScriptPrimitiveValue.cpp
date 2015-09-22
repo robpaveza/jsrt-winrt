@@ -43,6 +43,9 @@ JavaScriptValueType JavaScriptPrimitiveValue::Type::get()
     case JsFunction:
         return JavaScriptValueType::Function;
 
+    case JsSymbol:
+        return JavaScriptValueType::Symbol;
+
     case JsObject:
     case JsNull:
     case JsError:

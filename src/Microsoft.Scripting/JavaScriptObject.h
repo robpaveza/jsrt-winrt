@@ -55,6 +55,9 @@ namespace Microsoft
                 virtual IJavaScriptValue^ GetPropertyByName(String^ propertyName);
                 virtual void SetPropertyByName(String^ propertyName, IJavaScriptValue^ value);
                 virtual void DeletePropertyByName(String^ propertyName);
+                virtual IJavaScriptValue^ GetPropertyBySymbol(JavaScriptSymbol^ symbol);
+                virtual void SetPropertyBySymbol(JavaScriptSymbol^ symbol, IJavaScriptValue^ value);
+                virtual void DeletePropertyBySymbol(JavaScriptSymbol^ symbol);
                 virtual IJavaScriptValue^ GetValueAtIndex(IJavaScriptValue^ index);
                 virtual void SetValueAtIndex(IJavaScriptValue^ index, IJavaScriptValue^ value);
                 virtual void DeleteValueAtIndex(IJavaScriptValue^ index);
@@ -64,6 +67,7 @@ namespace Microsoft
                 virtual void DefineProperty(String^ propertyName, IJavaScriptObject^ descriptor);
                 virtual void DefineProperties(IJavaScriptObject^ propertiesContainer);
                 virtual JavaScriptArray^ GetOwnPropertyNames();
+                virtual JavaScriptArray^ GetOwnPropertySymbols();
                 virtual void PreventExtensions();
                 virtual void Seal();
                 virtual void Freeze();

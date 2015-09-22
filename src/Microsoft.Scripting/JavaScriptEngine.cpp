@@ -7,6 +7,8 @@
 #include "JavaScriptArray.h"
 #include "ScriptSource.h"
 #include "Errors.h"
+#include "JavaScriptSymbol.h"
+#include "JavaScriptEngineSymbolRegistry.h"
 #include <assert.h>
 
 using namespace ::Platform::Collections;
@@ -116,6 +118,11 @@ bool JavaScriptEngine::HasException::get()
     return has;
 }
 
+JavaScriptEngineSymbolRegistry^ JavaScriptEngine::Symbol::get()
+{
+    return symbols_;
+}
+
 JavaScriptEngine::JavaScriptEngine(JsContextRef context, JavaScriptRuntime^ runtime) :
     context_(context),
     runtime_(runtime)
@@ -133,6 +140,7 @@ JavaScriptEngine::JavaScriptEngine(JsContextRef context, JavaScriptRuntime^ runt
     this->Object_defineProperties_ = safe_cast<JavaScriptFunction^>(this->Object_ctor_->GetPropertyByName(L"defineProperties"));
 
     this->Array_prototype_ = (safe_cast<JavaScriptFunction^>(GetGlobalVariable(L"Array")))->Prototype;
+    this->symbols_ = ref new JavaScriptEngineSymbolRegistry(this);
 }
 
 void JavaScriptEngine::QueueRelease(JsValueRef handle)
@@ -369,6 +377,17 @@ JavaScriptObject^ JavaScriptEngine::CreateObject(JavaScriptObject^ prototype)
     }
 
     return static_cast<JavaScriptObject^>(CreateObjectFromHandle(resultRef));
+}
+
+JavaScriptSymbol^ JavaScriptEngine::CreateSymbol(String^ description)
+{
+    ClaimContext();
+
+    JsValueRef resultRef;
+    auto descJsStr = converter_->FromString(description);
+    EngCheckForFailure1(JsCreateSymbol(GetHandleFromVar(descJsStr), &resultRef));
+
+    return CreateSymbolFromHandle(resultRef);
 }
 
 JavaScriptObject^ JavaScriptEngine::CreateExternalObject(Object^ externalData, JavaScriptExternalObjectFinalizeCallback^ finalizer)
@@ -656,6 +675,9 @@ IJavaScriptValue^ JavaScriptEngine::CreateValueFromHandle(JsValueRef handle)
     case JsError:
         objectImpl = ref new JavaScriptObject(primitive);
         return objectImpl;
+    case JsSymbol:
+        objectImpl = ref new JavaScriptObject(primitive);
+        return ref new JavaScriptSymbol(primitive, objectImpl);
     case JsBoolean:
     case JsNumber:
     case JsString:
@@ -694,6 +716,26 @@ JavaScriptFunction^ JavaScriptEngine::CreateFunctionFromHandle(JsValueRef handle
     return ref new JavaScriptFunction(primitive, obj);
 }
 
+JavaScriptSymbol^ JavaScriptEngine::CreateSymbolFromHandle(JsValueRef handle)
+{
+    ClaimContext();
+
+    JsValueType kind;
+    EngCheckForFailure1(JsGetValueType(handle, &kind));
+
+    auto primitive = ref new JavaScriptPrimitiveValue(handle, this);
+    auto obj = ref new JavaScriptObject(primitive);
+
+    switch (kind)
+    {
+    case JsSymbol:
+        return ref new JavaScriptSymbol(primitive, obj);
+
+    default:
+        throw ref new Exception(E_INVALIDARG);
+    }
+}
+
 IJavaScriptObject^ JavaScriptEngine::CreateObjectFromHandle(JsValueRef handle)
 {
     ClaimContext();
@@ -712,6 +754,8 @@ IJavaScriptObject^ JavaScriptEngine::CreateObjectFromHandle(JsValueRef handle)
     case JsObject:
     case JsError:
         return obj;
+    case JsSymbol:
+        return ref new JavaScriptSymbol(primitive, obj);
     case JsBoolean:
     case JsNumber:
     case JsString:

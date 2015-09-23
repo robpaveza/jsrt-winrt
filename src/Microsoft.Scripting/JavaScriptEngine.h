@@ -63,6 +63,7 @@ namespace Microsoft
                 JsContextRef context_;
                 JavaScriptRuntime^ runtime_;
                 JavaScriptConverter^ converter_;
+                JavaScriptEngineSymbolRegistry^ symbols_;
                 
                 std::once_flag gotGlobal_, gotUndefined_, gotNull_, gotTrue_, gotFalse_;
                 JavaScriptObject ^global_, ^null_;
@@ -86,6 +87,7 @@ namespace Microsoft
                 JavaScriptFunction^ CreateFunctionFromHandle(JsValueRef handle);
                 IJavaScriptObject^ CreateObjectFromHandle(JsValueRef handle);
                 JavaScriptObject^ CreateFirmObjectFromHandle(JsValueRef handle);
+                JavaScriptSymbol^ CreateSymbolFromHandle(JsValueRef handle);
                 void QueueRelease(JsValueRef handle);
                 void ProcessError(JsErrorCode error);
 
@@ -127,6 +129,10 @@ namespace Microsoft
                 {
                     bool get();
                 }
+                property JavaScriptEngineSymbolRegistry^ Symbol
+                {
+                    JavaScriptEngineSymbolRegistry^ get();
+                }
 
                 // serialization methods
                 JavaScriptFunction^ EvaluateScriptText(String^ code);
@@ -139,6 +145,7 @@ namespace Microsoft
                 // API methods
                 JavaScriptObject^ CreateObject(JavaScriptObject^ prototype);
                 JavaScriptObject^ CreateExternalObject(Object^ externalData, JavaScriptExternalObjectFinalizeCallback^ finalizeCallback);
+                JavaScriptSymbol^ CreateSymbol(String^ description);
                 DateTime RunIdleWork();
 
                 bool HasGlobalVariable(String^ name);

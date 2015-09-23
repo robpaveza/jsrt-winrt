@@ -1,6 +1,7 @@
 ﻿using Microsoft.Scripting.JavaScript;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -43,6 +44,7 @@ namespace TestHost.UnitTests
         }
 
         [TestMethod(ExpectedException = typeof(COMException))]
+        [DebuggerStepThrough]
         public void DisableExecutionResultsInException()
         {
             runtime_.DisableExecution();

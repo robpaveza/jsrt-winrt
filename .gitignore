@@ -35,3 +35,6 @@
 *.ipch
 *.user
 *.filters
+Debug/
+obj/
+.vs/

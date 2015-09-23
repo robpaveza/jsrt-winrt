@@ -211,7 +211,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\..\Rob%27s OneDrive\OneDrive\JsRT for .NET\CX\Microsoft.Scripting\Microsoft.Scripting\Errors.h" />
+    <ClInclude Include="ArrayBufferBacking.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="JavaScriptArrayBuffer.h" />
     <ClInclude Include="JavaScriptPrimitiveValue.h" />
     <ClInclude Include="JavaScriptArray.h" />
     <ClInclude Include="JavaScriptConverter.h" />
@@ -226,6 +228,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\..\Rob%27s OneDrive\OneDrive\JsRT for .NET\CX\Microsoft.Scripting\Microsoft.Scripting\Errors.cpp" />
     <ClCompile Include="..\..\..\..\..\..\Rob%27s OneDrive\OneDrive\JsRT for .NET\CX\Microsoft.Scripting\Microsoft.Scripting\ScriptSource.cpp" />
+    <ClCompile Include="ArrayBufferBacking.cpp" />
+    <ClCompile Include="JavaScriptArrayBuffer.cpp" />
     <ClCompile Include="JavaScriptConverter.cpp" />
     <ClCompile Include="JavaScriptEngine.cpp" />
     <ClCompile Include="JavaScriptFunction.cpp" />

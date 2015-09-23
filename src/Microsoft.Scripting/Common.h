@@ -28,6 +28,25 @@ namespace Microsoft
                 Number = 5,
                 String = 6,
                 Undefined = 7,
+
+                Symbol,
+                ArrayBuffer,
+                TypedArray,
+                DataView,
+            };
+
+            [MD::WebHostHidden]
+            public enum class JavaScriptTypedArrayType
+            {
+                Int8,
+                Uint8,
+                Uint8Clamped,
+                Int16,
+                Uint16,
+                Int32,
+                Uint32,
+                Float32,
+                Float64,
             };
 
             ref class JavaScriptRuntimeSettings;

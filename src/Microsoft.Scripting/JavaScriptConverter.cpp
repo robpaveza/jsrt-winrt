@@ -100,6 +100,13 @@ String^ JavaScriptConverter::ToString(IJavaScriptValue^ value)
         ObjCheckForFailure(JsStringToPointer(strRef, &str, &strLen));
         result = ref new String(str, strLen);
     }
+    else if (value->Type == JavaScriptValueType::Symbol)
+    {
+        // Presently, JsRT doesn't have a way for the host to query the description of a Symbol.
+        // Using JsConvertValueToString resulted in putting the runtime into an exception state.
+        // So, detect this condition and just return a known string.
+        result = L"(Symbol)";
+    }
     else
     {
         ObjCheckForFailure(JsConvertValueToString(GetHandleFromVar(value), &strRef));

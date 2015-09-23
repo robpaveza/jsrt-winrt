@@ -113,6 +113,7 @@
     <Compile Include="UnitTest.cs" />
     <Compile Include="UnitTests\RuntimeBaseTests.cs" />
     <Compile Include="UnitTests\RuntimeTestsWithScriptInterruptEnabled.cs" />
+    <Compile Include="UnitTests\SymbolsUnitTest.cs" />
     <Compile Include="UnitTests\TestHelloWorld.cs" />
   </ItemGroup>
   <ItemGroup>

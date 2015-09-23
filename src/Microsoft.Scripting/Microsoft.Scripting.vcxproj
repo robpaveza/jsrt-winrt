@@ -127,6 +127,7 @@
       <DisableSpecificWarnings>28204</DisableSpecificWarnings>
       <PreprocessToFile>false</PreprocessToFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <XMLDocumentationFileName>$(OutDir)Microsoft.Scripting.xml</XMLDocumentationFileName>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -212,6 +213,7 @@
   <ItemGroup>
     <ClInclude Include="Errors.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="JavaScriptEngineSymbolRegistry.h" />
     <ClInclude Include="JavaScriptPrimitiveValue.h" />
     <ClInclude Include="JavaScriptArray.h" />
     <ClInclude Include="JavaScriptConverter.h" />
@@ -220,11 +222,14 @@
     <ClInclude Include="JavaScriptObject.h" />
     <ClInclude Include="JavaScriptRuntime.h" />
     <ClInclude Include="JavaScriptRuntimeSettings.h" />
+    <ClInclude Include="JavaScriptSymbol.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ScriptSource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Errors.cpp" />
+    <ClCompile Include="JavaScriptEngineSymbolRegistry.cpp" />
+    <ClCompile Include="JavaScriptSymbol.cpp" />
     <ClCompile Include="ScriptSource.cpp" />
     <ClCompile Include="JavaScriptConverter.cpp" />
     <ClCompile Include="JavaScriptEngine.cpp" />

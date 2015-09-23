@@ -28,6 +28,7 @@ namespace Microsoft
                 Number = 5,
                 String = 6,
                 Undefined = 7,
+                Symbol = 8,
             };
 
             ref class JavaScriptRuntimeSettings;
@@ -38,6 +39,8 @@ namespace Microsoft
             ref class JavaScriptObject;
             ref class JavaScriptArray;
             ref class JavaScriptFunction;
+            ref class JavaScriptSymbol;
+            ref class JavaScriptEngineSymbolRegistry;
 
             /// <summary>
             /// Represents any JavaScript variable.  JavaScript primitives are only accessible via this interface.
@@ -162,6 +165,18 @@ namespace Microsoft
                 /// </summary>
                 void DeletePropertyByName(String^ propertyName);
                 /// <summary>
+                /// Gets a property by symbol.
+                /// </summary>
+                IJavaScriptValue^ GetPropertyBySymbol(JavaScriptSymbol^ symbol);
+                /// <summary>
+                /// Sets a property by symbol.
+                /// </summary>
+                void SetPropertyBySymbol(JavaScriptSymbol^ symbol, IJavaScriptValue^ value);
+                /// <summary>
+                /// Deletes a property by symbol.
+                /// </summary>
+                void DeletePropertyBySymbol(JavaScriptSymbol^ symbol);
+                /// <summary>
                 /// Gets a value at an index.
                 /// </summary>
                 IJavaScriptValue^ GetValueAtIndex(IJavaScriptValue^ index);
@@ -197,6 +212,10 @@ namespace Microsoft
                 /// Gets an array of own-property names.
                 /// </summary>
                 JavaScriptArray^ GetOwnPropertyNames();
+                /// <summary>
+                /// Gets an array of own-property Symbols.
+                /// </summary>
+                JavaScriptArray^ GetOwnPropertySymbols();
                 /// <summary>
                 /// Prevents the addition of properties to the object.
                 /// </summary>
@@ -354,6 +373,9 @@ bool TYPENAME::StrictEquals(IJavaScriptValue^ other) \
                 virtual IJavaScriptValue^ GetPropertyByName(String^ propertyName); \
                 virtual void SetPropertyByName(String^ propertyName, IJavaScriptValue^ value); \
                 virtual void DeletePropertyByName(String^ propertyName); \
+                virtual IJavaScriptValue^ GetPropertyBySymbol(JavaScriptSymbol^ symbol); \
+                virtual void SetPropertyBySymbol(JavaScriptSymbol^ symbol, IJavaScriptValue^ value); \
+                virtual void DeletePropertyBySymbol(JavaScriptSymbol^ symbol); \
                 virtual IJavaScriptValue^ GetValueAtIndex(IJavaScriptValue^ index); \
                 virtual void SetValueAtIndex(IJavaScriptValue^ index, IJavaScriptValue^ value); \
                 virtual void DeleteValueAtIndex(IJavaScriptValue^ index); \
@@ -363,6 +385,7 @@ bool TYPENAME::StrictEquals(IJavaScriptValue^ other) \
                 virtual void DefineProperty(String^ propertyName, IJavaScriptObject^ descriptor); \
                 virtual void DefineProperties(IJavaScriptObject^ propertiesContainer); \
                 virtual JavaScriptArray^ GetOwnPropertyNames(); \
+                virtual JavaScriptArray^ GetOwnPropertySymbols(); \
                 virtual void PreventExtensions(); \
                 virtual void Seal(); \
                 virtual void Freeze(); \
@@ -427,6 +450,18 @@ void TYPENAME::DeletePropertyByName(String^ propertyName) \
     object_->DeletePropertyByName(propertyName); \
 } \
 \
+IJavaScriptValue^ TYPENAME::GetPropertyBySymbol(JavaScriptSymbol^ symbol) \
+{ \
+    return object_->GetPropertyBySymbol(symbol); \
+} \
+void TYPENAME::SetPropertyBySymbol(JavaScriptSymbol^ symbol, IJavaScriptValue^ value) \
+{ \
+    object_->SetPropertyBySymbol(symbol, value); \
+} \
+void TYPENAME::DeletePropertyBySymbol(JavaScriptSymbol^ symbol) \
+{ \
+    object_->DeletePropertyBySymbol(symbol); \
+} \
 IJavaScriptValue^ TYPENAME::GetValueAtIndex(IJavaScriptValue^ index) \
 { \
     return object_->GetValueAtIndex(index); \
@@ -470,6 +505,10 @@ void TYPENAME::DefineProperties(IJavaScriptObject^ propertiesContainer) \
 JavaScriptArray^ TYPENAME::GetOwnPropertyNames() \
 { \
     return object_->GetOwnPropertyNames(); \
+} \
+JavaScriptArray^ TYPENAME::GetOwnPropertySymbols() \
+{ \
+    return object_->GetOwnPropertySymbols(); \
 } \
 \
 void TYPENAME::PreventExtensions() \

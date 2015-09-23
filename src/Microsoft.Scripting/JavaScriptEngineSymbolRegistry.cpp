@@ -18,14 +18,15 @@ JavaScriptEngineSymbolRegistry::JavaScriptEngineSymbolRegistry(JavaScriptEngine^
 
     iterator_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"iterator"));
 
+    hasInstance_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"hasInstance"));
+    unscopables_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"unscopables"));
+
     /*match_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"match"));
     replace_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"replace"));
     search_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"search"));
     split_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"split"));
 
-    hasInstance_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"hasInstance"));
     isConcatSpreadable_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"isConcatSpreadable"));
-    unscopables_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"unscopables"));
     species_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"species"));
     toPrimitive_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"toPrimitive"));
     toStringTag_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"toStringTag"));*/
@@ -41,6 +42,17 @@ JavaScriptSymbol^ JavaScriptEngineSymbolRegistry::Iterator::get()
     return iterator_;
 }
 
+JavaScriptSymbol^ JavaScriptEngineSymbolRegistry::Unscopables::get()
+{
+    return unscopables_;
+}
+
+JavaScriptSymbol^ JavaScriptEngineSymbolRegistry::HasInstance::get()
+{
+    return hasInstance_;
+}
+
+/*
 JavaScriptSymbol^ JavaScriptEngineSymbolRegistry::Match::get()
 {
     return match_;
@@ -61,19 +73,9 @@ JavaScriptSymbol^ JavaScriptEngineSymbolRegistry::Split::get()
     return split_;
 }
 
-JavaScriptSymbol^ JavaScriptEngineSymbolRegistry::HasInstance::get()
-{
-    return hasInstance_;
-}
-
 JavaScriptSymbol^ JavaScriptEngineSymbolRegistry::IsConcatSpreadable::get()
 {
     return isConcatSpreadable_;
-}
-
-JavaScriptSymbol^ JavaScriptEngineSymbolRegistry::Unscopables::get()
-{
-    return unscopables_;
 }
 
 JavaScriptSymbol^ JavaScriptEngineSymbolRegistry::Species::get()
@@ -90,6 +92,7 @@ JavaScriptSymbol^ JavaScriptEngineSymbolRegistry::ToStringTag::get()
 {
     return toStringTag_;
 }
+*/
 
 JavaScriptSymbol^ JavaScriptEngineSymbolRegistry::For(String^ key)
 {

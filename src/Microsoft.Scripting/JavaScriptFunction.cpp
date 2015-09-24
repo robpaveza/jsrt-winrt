@@ -29,9 +29,11 @@ IJavaScriptValue^ JavaScriptFunction::Invoke(IIterable<IJavaScriptValue^>^ argum
         hasCurrent = iter->HasCurrent;
         if (hasCurrent)
         {
-            argRefs.push_back(GetHandleFromVar(iter->Current));
+            auto current = iter->Current;
+            auto handle = GetHandleFromVar(current);
+            argRefs.push_back(handle);
+            iter->MoveNext();
         }
-        iter->MoveNext();
     } while (hasCurrent);
 
     if (argRefs.size() > UINT16_MAX_VALUE)

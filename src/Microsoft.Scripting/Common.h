@@ -29,6 +29,23 @@ namespace Microsoft
                 String = 6,
                 Undefined = 7,
                 Symbol = 8,
+                ArrayBuffer,
+                TypedArray,
+                DataView,
+            };
+
+            [MD::WebHostHidden]
+            public enum class JavaScriptTypedArrayType
+            {
+                Int8,
+                Uint8,
+                Uint8Clamped,
+                Int16,
+                Uint16,
+                Int32,
+                Uint32,
+                Float32,
+                Float64,
             };
 
             ref class JavaScriptRuntimeSettings;
@@ -41,6 +58,8 @@ namespace Microsoft
             ref class JavaScriptFunction;
             ref class JavaScriptSymbol;
             ref class JavaScriptEngineSymbolRegistry;
+            ref class JavaScriptArrayBuffer;
+            ref class JavaScriptTypedArray;
 
             /// <summary>
             /// Represents any JavaScript variable.  JavaScript primitives are only accessible via this interface.

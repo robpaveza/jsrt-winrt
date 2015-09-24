@@ -144,6 +144,7 @@
       <AdditionalUsingDirectories>$(WindowsSDK_WindowsMetadata);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>28204</DisableSpecificWarnings>
+      <XMLDocumentationFileName>$(OutDir)Microsoft.Scripting.xml</XMLDocumentationFileName>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -159,6 +160,7 @@
       <AdditionalUsingDirectories>$(WindowsSDK_WindowsMetadata);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>28204</DisableSpecificWarnings>
+      <XMLDocumentationFileName>$(OutDir)Microsoft.Scripting.xml</XMLDocumentationFileName>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -174,6 +176,7 @@
       <AdditionalUsingDirectories>$(WindowsSDK_WindowsMetadata);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>28204</DisableSpecificWarnings>
+      <XMLDocumentationFileName>$(OutDir)Microsoft.Scripting.xml</XMLDocumentationFileName>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -189,6 +192,7 @@
       <AdditionalUsingDirectories>$(WindowsSDK_WindowsMetadata);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>28204</DisableSpecificWarnings>
+      <XMLDocumentationFileName>$(OutDir)Microsoft.Scripting.xml</XMLDocumentationFileName>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -204,6 +208,7 @@
       <AdditionalUsingDirectories>$(WindowsSDK_WindowsMetadata);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>28204</DisableSpecificWarnings>
+      <XMLDocumentationFileName>$(OutDir)Microsoft.Scripting.xml</XMLDocumentationFileName>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -211,8 +216,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Errors.h" />
+    <ClInclude Include="ArrayBufferBacking.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="Errors.h" />
+    <ClInclude Include="JavaScriptArrayBuffer.h" />
+    <ClInclude Include="JavaScriptDataView.h" />
     <ClInclude Include="JavaScriptEngineSymbolRegistry.h" />
     <ClInclude Include="JavaScriptPrimitiveValue.h" />
     <ClInclude Include="JavaScriptArray.h" />
@@ -223,21 +231,26 @@
     <ClInclude Include="JavaScriptRuntime.h" />
     <ClInclude Include="JavaScriptRuntimeSettings.h" />
     <ClInclude Include="JavaScriptSymbol.h" />
+    <ClInclude Include="JavaScriptTypedArray.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ScriptSource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ArrayBufferBacking.cpp" />
     <ClCompile Include="Errors.cpp" />
-    <ClCompile Include="JavaScriptEngineSymbolRegistry.cpp" />
-    <ClCompile Include="JavaScriptSymbol.cpp" />
-    <ClCompile Include="ScriptSource.cpp" />
+    <ClCompile Include="JavaScriptArray.cpp" />
+    <ClCompile Include="JavaScriptArrayBuffer.cpp" />
     <ClCompile Include="JavaScriptConverter.cpp" />
+    <ClCompile Include="JavaScriptDataView.cpp" />
     <ClCompile Include="JavaScriptEngine.cpp" />
+    <ClCompile Include="JavaScriptEngineSymbolRegistry.cpp" />
     <ClCompile Include="JavaScriptFunction.cpp" />
     <ClCompile Include="JavaScriptObject.cpp" />
     <ClCompile Include="JavaScriptPrimitiveValue.cpp" />
     <ClCompile Include="JavaScriptRuntime.cpp" />
     <ClCompile Include="JavaScriptRuntimeSettings.cpp" />
+    <ClCompile Include="JavaScriptSymbol.cpp" />
+    <ClCompile Include="JavaScriptTypedArray.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -246,7 +259,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="JavaScriptArray.cpp" />
+    <ClCompile Include="ScriptSource.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

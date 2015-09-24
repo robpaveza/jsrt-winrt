@@ -41,7 +41,7 @@ void JavaScriptArray::SetAt(int32 index, IJavaScriptValue^ value)
 
 IJavaScriptValue^ JavaScriptArray::Pop()
 {
-    auto arg = ref new Vector<IJavaScriptValue^>(1);
+    auto arg = ref new Vector<IJavaScriptValue^>();
     arg->Append(this);
     return safe_cast<JavaScriptFunction^>(engine_->Array_prototype_->GetPropertyByName(L"pop"))->Invoke(arg);
 }
@@ -51,7 +51,7 @@ void JavaScriptArray::Push(IJavaScriptValue^ value)
     if (value == nullptr)
         value = engine_->NullValue;
 
-    auto arg = ref new Vector<IJavaScriptValue^>(2);
+    auto arg = ref new Vector<IJavaScriptValue^>();
     arg->Append(this);
     arg->Append(value);
     safe_cast<JavaScriptFunction^>(engine_->Array_prototype_->GetPropertyByName(L"push"))->Invoke(arg);
@@ -59,14 +59,14 @@ void JavaScriptArray::Push(IJavaScriptValue^ value)
 
 void JavaScriptArray::Reverse()
 {
-    auto arg = ref new Vector<IJavaScriptValue^>(1);
+    auto arg = ref new Vector<IJavaScriptValue^>();
     arg->Append(this);
     safe_cast<JavaScriptFunction^>(engine_->Array_prototype_->GetPropertyByName(L"reverse"))->Invoke(arg);
 }
 
 IJavaScriptValue^ JavaScriptArray::Shift()
 {
-    auto arg = ref new Vector<IJavaScriptValue^>(1);
+    auto arg = ref new Vector<IJavaScriptValue^>();
     arg->Append(this);
     return safe_cast<JavaScriptFunction^>(engine_->Array_prototype_->GetPropertyByName(L"shift"))->Invoke(arg);
 }
@@ -134,7 +134,7 @@ JavaScriptArray^ JavaScriptArray::Concat(IIterable<IJavaScriptValue^>^ itemsToCo
 
 String^ JavaScriptArray::Join(String^ separator)
 {
-    auto arg = ref new Vector<IJavaScriptValue^>(2);
+    auto arg = ref new Vector<IJavaScriptValue^>();
     arg->Append(this);
     arg->Append(engine_->Converter->FromString(separator));
     
@@ -143,7 +143,7 @@ String^ JavaScriptArray::Join(String^ separator)
 
 JavaScriptArray^ JavaScriptArray::Slice(int32 beginning)
 {
-    auto arg = ref new Vector<IJavaScriptValue^>(2);
+    auto arg = ref new Vector<IJavaScriptValue^>();
     arg->Append(this);
     arg->Append(engine_->Converter->FromDouble(beginning));
 
@@ -152,7 +152,7 @@ JavaScriptArray^ JavaScriptArray::Slice(int32 beginning)
 
 JavaScriptArray^ JavaScriptArray::Slice(int32 beginning, int32 end)
 {
-    auto arg = ref new Vector<IJavaScriptValue^>(3);
+    auto arg = ref new Vector<IJavaScriptValue^>();
     arg->Append(this);
     arg->Append(engine_->Converter->FromDouble(beginning));
     arg->Append(engine_->Converter->FromDouble(end));
@@ -162,7 +162,7 @@ JavaScriptArray^ JavaScriptArray::Slice(int32 beginning, int32 end)
 
 int32 JavaScriptArray::IndexOf(IJavaScriptValue^ valueToFind)
 {
-    auto arg = ref new Vector<IJavaScriptValue^>(2);
+    auto arg = ref new Vector<IJavaScriptValue^>();
     arg->Append(this);
     arg->Append(valueToFind);
 
@@ -171,7 +171,7 @@ int32 JavaScriptArray::IndexOf(IJavaScriptValue^ valueToFind)
 
 int32 JavaScriptArray::IndexOf(IJavaScriptValue^ valueToFind, int32 startIndex)
 {
-    auto arg = ref new Vector<IJavaScriptValue^>(3);
+    auto arg = ref new Vector<IJavaScriptValue^>();
     arg->Append(this);
     arg->Append(valueToFind);
     arg->Append(engine_->Converter->FromDouble(startIndex));
@@ -181,7 +181,7 @@ int32 JavaScriptArray::IndexOf(IJavaScriptValue^ valueToFind, int32 startIndex)
 
 int32 JavaScriptArray::LastIndexOf(IJavaScriptValue^ valueToFind)
 {
-    auto arg = ref new Vector<IJavaScriptValue^>(2);
+    auto arg = ref new Vector<IJavaScriptValue^>();
     arg->Append(this);
     arg->Append(valueToFind);
 
@@ -190,7 +190,7 @@ int32 JavaScriptArray::LastIndexOf(IJavaScriptValue^ valueToFind)
 
 int32 JavaScriptArray::LastIndexOf(IJavaScriptValue^ valueToFind, int32 lastIndex)
 {
-    auto arg = ref new Vector<IJavaScriptValue^>(3);
+    auto arg = ref new Vector<IJavaScriptValue^>();
     arg->Append(this);
     arg->Append(valueToFind);
     arg->Append(engine_->Converter->FromDouble(lastIndex));
@@ -203,7 +203,7 @@ void JavaScriptArray::ForEach(JavaScriptFunction^ callee)
     if (callee == nullptr)
         throw ref new Exception(E_INVALIDARG);
 
-    auto arg = ref new Vector<IJavaScriptValue^>(2);
+    auto arg = ref new Vector<IJavaScriptValue^>();
     arg->Append(this);
     arg->Append(callee);
 
@@ -215,7 +215,7 @@ bool JavaScriptArray::Every(JavaScriptFunction^ predicate)
     if (predicate == nullptr)
         throw ref new Exception(E_INVALIDARG);
 
-    auto arg = ref new Vector<IJavaScriptValue^>(2);
+    auto arg = ref new Vector<IJavaScriptValue^>();
     arg->Append(this);
     arg->Append(predicate);
 
@@ -227,7 +227,7 @@ bool JavaScriptArray::Some(JavaScriptFunction^ predicate)
     if (predicate == nullptr)
         throw ref new Exception(E_INVALIDARG);
 
-    auto arg = ref new Vector<IJavaScriptValue^>(2);
+    auto arg = ref new Vector<IJavaScriptValue^>();
     arg->Append(this);
     arg->Append(predicate);
 
@@ -239,7 +239,7 @@ JavaScriptArray^ JavaScriptArray::Filter(JavaScriptFunction^ predicate)
     if (predicate == nullptr)
         throw ref new Exception(E_INVALIDARG);
 
-    auto arg = ref new Vector<IJavaScriptValue^>(2);
+    auto arg = ref new Vector<IJavaScriptValue^>();
     arg->Append(this);
     arg->Append(predicate);
 
@@ -251,7 +251,7 @@ JavaScriptArray^ JavaScriptArray::Map(JavaScriptFunction^ converter)
     if (converter == nullptr)
         throw ref new Exception(E_INVALIDARG);
 
-    auto arg = ref new Vector<IJavaScriptValue^>(2);
+    auto arg = ref new Vector<IJavaScriptValue^>();
     arg->Append(this);
     arg->Append(converter);
 
@@ -263,7 +263,7 @@ IJavaScriptValue^ JavaScriptArray::Reduce(JavaScriptFunction^ aggregator)
     if (aggregator == nullptr)
         throw ref new Exception(E_INVALIDARG);
 
-    auto arg = ref new Vector<IJavaScriptValue^>(2);
+    auto arg = ref new Vector<IJavaScriptValue^>();
     arg->Append(this);
     arg->Append(aggregator);
 
@@ -277,7 +277,7 @@ IJavaScriptValue^ JavaScriptArray::Reduce(JavaScriptFunction^ aggregator, IJavaS
     if (initialValue == nullptr)
         initialValue = engine_->UndefinedValue;
 
-    auto arg = ref new Vector<IJavaScriptValue^>(3);
+    auto arg = ref new Vector<IJavaScriptValue^>();
     arg->Append(this);
     arg->Append(aggregator);
     arg->Append(initialValue);
@@ -290,7 +290,7 @@ IJavaScriptValue^ JavaScriptArray::ReduceRight(JavaScriptFunction^ aggregator)
     if (aggregator == nullptr)
         throw ref new Exception(E_INVALIDARG);
 
-    auto arg = ref new Vector<IJavaScriptValue^>(2);
+    auto arg = ref new Vector<IJavaScriptValue^>();
     arg->Append(this);
     arg->Append(aggregator);
 

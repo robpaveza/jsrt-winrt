@@ -88,6 +88,20 @@ namespace Microsoft
                         return result;
                     }
                 }
+
+                /// <summary>
+                /// Gets the runtime handle (<c>JsRuntimeHandle</c>) contained by this runtime.
+                /// </summary>
+                /// <remarks>
+                /// You should not use this property unless you absolutely know what you are doing.  Doing so may cause memory corruption.
+                /// </remarks>
+                property IntPtr Handle
+                {
+                    IntPtr get()
+                    {
+                        return IntPtr(runtime_);
+                    }
+                }
             };
         };
     };

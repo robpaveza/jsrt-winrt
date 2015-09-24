@@ -37,3 +37,4 @@
 *.filters
 Debug/
 obj/
+.vs/

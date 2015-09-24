@@ -172,6 +172,12 @@ namespace Microsoft
                     JavaScriptEngineSymbolRegistry^ get();
                 }
 #endif // USE_EDGEMODE_JSRT
+                /// <summary>
+                /// Gets the context handle (<c>JsContextRef</c>) contained by this engine.
+                /// </summary>
+                /// <remarks>
+                /// You should not use this property unless you absolutely know what you are doing.  Doing so may cause memory corruption.
+                /// </remarks>
                 property IntPtr Handle
                 {
                     IntPtr get();

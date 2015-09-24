@@ -25,7 +25,7 @@ bool JavaScriptObject::IsPrototypeOf(IJavaScriptObject^ other)
     engine_->ClaimContext();
 
     auto fn = safe_cast<JavaScriptFunction^>(GetPropertyByName(L"isPrototypeOf"));
-    auto args = ref new Vector<IJavaScriptValue^>(2);
+    auto args = ref new Vector<IJavaScriptValue^>();
     args->Append(this);
     args->Append(other);
     auto result = fn->Invoke(args);
@@ -40,7 +40,7 @@ bool JavaScriptObject::PropertyIsEnumerable(String^ propertyName)
     IJavaScriptValue^ jsPropName = engine_->Converter->FromString(propertyName);
 
     auto fn = safe_cast<JavaScriptFunction^>(GetPropertyByName(L"propertyIsEnumerable"));
-    auto args = ref new Vector<IJavaScriptValue^>(2);
+    auto args = ref new Vector<IJavaScriptValue^>();
     args->Append(this);
     args->Append(jsPropName);
     auto result = fn->Invoke(args);
@@ -166,7 +166,7 @@ bool JavaScriptObject::HasOwnProperty(String^ propertyName)
     engine_->ClaimContext();
     
     auto fn = safe_cast<JavaScriptFunction^>(GetPropertyByName(L"hasOwnProperty"));
-    auto args = ref new Vector<IJavaScriptValue^>(2);
+    auto args = ref new Vector<IJavaScriptValue^>();
     args->Append(this);
     args->Append(engine_->Converter->FromString(propertyName));
 
@@ -216,7 +216,7 @@ void JavaScriptObject::DefineProperty(String^ propertyName, IJavaScriptObject^ d
 
 void JavaScriptObject::DefineProperties(IJavaScriptObject^ propertiesContainer)
 {
-    auto args = ref new Vector<IJavaScriptValue^>(2);
+    auto args = ref new Vector<IJavaScriptValue^>();
     args->Append(engine_->UndefinedValue);
     args->Append(propertiesContainer);
 
@@ -252,7 +252,7 @@ void JavaScriptObject::PreventExtensions()
 
 void JavaScriptObject::Seal()
 {
-    auto args = ref new Vector<IJavaScriptValue^>(2);
+    auto args = ref new Vector<IJavaScriptValue^>();
     args->Append(engine_->UndefinedValue);
     args->Append(this);
 
@@ -261,7 +261,7 @@ void JavaScriptObject::Seal()
 
 void JavaScriptObject::Freeze()
 {
-    auto args = ref new Vector<IJavaScriptValue^>(2);
+    auto args = ref new Vector<IJavaScriptValue^>();
     args->Append(engine_->UndefinedValue);
     args->Append(this);
 
@@ -273,7 +273,7 @@ void JavaScriptObject::Freeze()
 
 JavaScriptArray^ JavaScriptObject::Keys::get()
 {
-    auto args = ref new Vector<IJavaScriptValue^>(2);
+    auto args = ref new Vector<IJavaScriptValue^>();
     args->Append(engine_->UndefinedValue);
     args->Append(this);
 
@@ -309,7 +309,7 @@ void JavaScriptObject::Prototype::set(IJavaScriptObject^ value)
 
 bool JavaScriptObject::IsSealed::get()
 {
-    auto args = ref new Vector<IJavaScriptValue^>(2);
+    auto args = ref new Vector<IJavaScriptValue^>();
     args->Append(engine_->UndefinedValue);
     args->Append(this);
 
@@ -318,7 +318,7 @@ bool JavaScriptObject::IsSealed::get()
 
 bool JavaScriptObject::IsFrozen::get()
 {
-    auto args = ref new Vector<IJavaScriptValue^>(2);
+    auto args = ref new Vector<IJavaScriptValue^>();
     args->Append(engine_->UndefinedValue);
     args->Append(this);
 

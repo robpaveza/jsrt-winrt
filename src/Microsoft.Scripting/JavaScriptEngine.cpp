@@ -9,6 +9,9 @@
 #include "Errors.h"
 #include "JavaScriptSymbol.h"
 #include "JavaScriptEngineSymbolRegistry.h"
+#include "JavaScriptArrayBuffer.h"
+#include "JavaScriptTypedArray.h"
+#include "JavaScriptDataView.h"
 #include <assert.h>
 
 using namespace ::Platform::Collections;
@@ -687,6 +690,15 @@ IJavaScriptValue^ JavaScriptEngine::CreateValueFromHandle(JsValueRef handle)
     case JsSymbol:
         objectImpl = ref new JavaScriptObject(primitive);
         return ref new JavaScriptSymbol(primitive, objectImpl);
+    case JsArrayBuffer:
+        objectImpl = ref new JavaScriptObject(primitive);
+        return ref new JavaScriptArrayBuffer(primitive, objectImpl);
+    case JsTypedArray:
+        objectImpl = ref new JavaScriptObject(primitive);
+        return ref new JavaScriptTypedArray(primitive, objectImpl);
+    case JsDataView:
+        objectImpl = ref new JavaScriptObject(primitive);
+        return ref new JavaScriptDataView(primitive, objectImpl);
     case JsBoolean:
     case JsNumber:
     case JsString:
@@ -765,6 +777,12 @@ IJavaScriptObject^ JavaScriptEngine::CreateObjectFromHandle(JsValueRef handle)
         return obj;
     case JsSymbol:
         return ref new JavaScriptSymbol(primitive, obj);
+    case JsArrayBuffer:
+        return ref new JavaScriptArrayBuffer(primitive, obj);
+    case JsTypedArray:
+        return ref new JavaScriptTypedArray(primitive, obj);
+    case JsDataView:
+        return ref new JavaScriptDataView(primitive, obj);
     case JsBoolean:
     case JsNumber:
     case JsString:
@@ -796,6 +814,9 @@ JavaScriptObject^ JavaScriptEngine::CreateFirmObjectFromHandle(JsValueRef handle
     case JsString:
     case JsNull:
     case JsUndefined:
+    case JsArrayBuffer:
+    case JsTypedArray:
+    case JsDataView:
     default:
         throw ref new Exception(E_INVALIDARG);
     }

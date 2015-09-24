@@ -98,7 +98,7 @@ JavaScriptSymbol^ JavaScriptEngineSymbolRegistry::For(String^ key)
 {
     // ctor_->GetPropertyByName will invoke ClaimContext
     auto forFn = safe_cast<JavaScriptFunction^>(ctor_->GetPropertyByName(L"for"));
-    auto args = ref new Vector<IJavaScriptValue^>(2);
+    auto args = ref new Vector<IJavaScriptValue^>();
     args->Append(ctor_);
     args->Append(engine_->Converter->FromString(key));
 
@@ -113,7 +113,7 @@ String^ JavaScriptEngineSymbolRegistry::KeyFor(JavaScriptSymbol^ symbol)
 {
     // ctor_->GetPropertyByName will invoke ClaimContext
     auto forFn = safe_cast<JavaScriptFunction^>(ctor_->GetPropertyByName(L"keyFor"));
-    auto args = ref new Vector<IJavaScriptValue^>(2);
+    auto args = ref new Vector<IJavaScriptValue^>();
     args->Append(ctor_);
     args->Append(symbol);
 

@@ -8,6 +8,9 @@ namespace Microsoft
     {
         namespace JavaScript
         {
+            /// <summary>
+            /// Represents a JavaScript <c>Symbol</c> value.
+            /// </summary>
             [MD::WebHostHidden]
             public ref class JavaScriptSymbol sealed :
                 public IJavaScriptObject
@@ -22,10 +25,16 @@ namespace Microsoft
                 JavaScriptSymbol(JavaScriptPrimitiveValue^ primitive, JavaScriptObject^ object);
 
             public:
+                /// <summary>
+                /// Gets the Symbol's description.
+                /// </summary>
                 property String^ Description
                 {
                     String^ get();
                 }
+                /// <summary>
+                /// Gets the Symbol's <c>length</c> property.
+                /// </summary>
                 property int32 Length
                 {
                     int32 get();

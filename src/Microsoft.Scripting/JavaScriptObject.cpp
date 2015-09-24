@@ -86,6 +86,7 @@ void JavaScriptObject::DeletePropertyByName(String^ propertyName)
     ObjCheckForFailure(JsDeleteProperty(handle_, propertyId, false, &tmpResult));
 }
 
+#ifdef USE_EDGEMODE_JSRT
 IJavaScriptValue^ JavaScriptObject::GetPropertyBySymbol(JavaScriptSymbol^ symbol)
 {
     engine_->ClaimContext();
@@ -122,6 +123,7 @@ void JavaScriptObject::DeletePropertyBySymbol(JavaScriptSymbol^ symbol)
     JsValueRef tmpResult;
     ObjCheckForFailure(JsDeleteProperty(handle_, propertyId, false, &tmpResult));
 }
+#endif // USE_EDGEMODE_JSRT
 
 IJavaScriptValue^ JavaScriptObject::GetValueAtIndex(IJavaScriptValue^ index)
 {

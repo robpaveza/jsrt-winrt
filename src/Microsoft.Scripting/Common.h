@@ -285,6 +285,18 @@ namespace Microsoft
     };
 };
 
+
+/*
+inline JavaScriptEngine^ GetJsEngine(WeakReference& ref)
+{
+    auto eng = ref.Resolve<JavaScriptEngine>();
+    if (eng == nullptr)
+        throw ref new ObjectDisposedException(L"The JavaScriptEngine has been shut down.");
+    return eng;
+}
+*/
+
+
 extern String^ NoMutateJsRuntimeSettings;
 extern String^ EngineDisposed;
 
@@ -362,6 +374,7 @@ bool TYPENAME::StrictEquals(IJavaScriptValue^ other) \
 
 #pragma region Delegation shorthand for IJavaScriptObject
 // Note: Expects an object-level JavaScriptObject^ implementation named `object_`.
+#ifdef USE_EDGEMODE_JSRT
 #define DECLARE_JAVASCRIPT_OBJECT_VIRTUAL_MEMBERS() \
             public: \
                 property JavaScriptArray^ Keys \
@@ -409,7 +422,6 @@ bool TYPENAME::StrictEquals(IJavaScriptValue^ other) \
                 virtual void Seal(); \
                 virtual void Freeze(); \
                 DECLARE_JAVASCRIPT_PRIMITIVE_VALUE_VIRTUAL_MEMBERS() \
-
 
 #define DECLARE_JAVASCRIPT_OBJECT_IMPLEMENTATION(TYPENAME) \
 DECLARE_JAVASCRIPT_PRIMITIVE_VALUE_IMPLEMENTATION( TYPENAME ) \
@@ -545,7 +557,176 @@ void TYPENAME::Freeze() \
     object_->Freeze(); \
 } \
 
+#else 
+#define DECLARE_JAVASCRIPT_OBJECT_VIRTUAL_MEMBERS() \
+            public: \
+                property JavaScriptArray^ Keys \
+                { \
+                    virtual JavaScriptArray^ get(); \
+                } \
+                property bool IsExtensible \
+                { \
+                    virtual bool get(); \
+                } \
+                property IJavaScriptObject^ Prototype \
+                { \
+                    virtual IJavaScriptObject^ get(); \
+                    virtual void set(IJavaScriptObject^ value); \
+                } \
+                property bool IsSealed \
+                { \
+                    virtual bool get(); \
+                } \
+                property bool IsFrozen \
+                { \
+                    virtual bool get(); \
+                } \
+\
+                virtual bool IsPrototypeOf(IJavaScriptObject^ other); \
+                virtual bool PropertyIsEnumerable(String^ propertyName); \
+\
+                virtual IJavaScriptValue^ GetPropertyByName(String^ propertyName); \
+                virtual void SetPropertyByName(String^ propertyName, IJavaScriptValue^ value); \
+                virtual void DeletePropertyByName(String^ propertyName); \
+                virtual IJavaScriptValue^ GetValueAtIndex(IJavaScriptValue^ index); \
+                virtual void SetValueAtIndex(IJavaScriptValue^ index, IJavaScriptValue^ value); \
+                virtual void DeleteValueAtIndex(IJavaScriptValue^ index); \
+                virtual bool HasOwnProperty(String^ propertyName); \
+                virtual bool HasProperty(String^ propertyName); \
+                virtual JavaScriptObject^ GetOwnPropertyDescriptor(String^ propertyName); \
+                virtual void DefineProperty(String^ propertyName, IJavaScriptObject^ descriptor); \
+                virtual void DefineProperties(IJavaScriptObject^ propertiesContainer); \
+                virtual JavaScriptArray^ GetOwnPropertyNames(); \
+                virtual JavaScriptArray^ GetOwnPropertySymbols(); \
+                virtual void PreventExtensions(); \
+                virtual void Seal(); \
+                virtual void Freeze(); \
+                DECLARE_JAVASCRIPT_PRIMITIVE_VALUE_VIRTUAL_MEMBERS() \
+
+#define DECLARE_JAVASCRIPT_OBJECT_IMPLEMENTATION(TYPENAME) \
+DECLARE_JAVASCRIPT_PRIMITIVE_VALUE_IMPLEMENTATION( TYPENAME ) \
+\
+JavaScriptArray^ TYPENAME::Keys::get() \
+{ \
+    return object_->Keys; \
+} \
+\
+bool TYPENAME::IsExtensible::get() \
+{ \
+    return object_->IsExtensible; \
+} \
+\
+IJavaScriptObject^ TYPENAME::Prototype::get() \
+{ \
+    return object_->Prototype; \
+} \
+\
+void TYPENAME::Prototype::set(IJavaScriptObject^ newPrototype) \
+{ \
+    object_->Prototype = newPrototype; \
+} \
+\
+bool TYPENAME::IsSealed::get() \
+{ \
+    return object_->IsSealed; \
+} \
+\
+bool TYPENAME::IsFrozen::get() \
+{ \
+    return object_->IsFrozen; \
+} \
+\
+bool TYPENAME::IsPrototypeOf(IJavaScriptObject^ other) \
+{ \
+    return object_->IsPrototypeOf(other); \
+} \
+\
+bool TYPENAME::PropertyIsEnumerable(String^ propertyName) \
+{ \
+    return object_->PropertyIsEnumerable(propertyName); \
+} \
+\
+IJavaScriptValue^ TYPENAME::GetPropertyByName(String^ propertyName) \
+{ \
+    return object_->GetPropertyByName(propertyName); \
+} \
+\
+void TYPENAME::SetPropertyByName(String^ propertyName, IJavaScriptValue^ value) \
+{ \
+    object_->SetPropertyByName(propertyName, value); \
+} \
+\
+void TYPENAME::DeletePropertyByName(String^ propertyName) \
+{ \
+    object_->DeletePropertyByName(propertyName); \
+} \
+\
+IJavaScriptValue^ TYPENAME::GetValueAtIndex(IJavaScriptValue^ index) \
+{ \
+    return object_->GetValueAtIndex(index); \
+} \
+\
+void TYPENAME::SetValueAtIndex(IJavaScriptValue^ index, IJavaScriptValue^ value) \
+{ \
+    object_->SetValueAtIndex(index, value); \
+} \
+\
+void TYPENAME::DeleteValueAtIndex(IJavaScriptValue^ index) \
+{ \
+    object_->DeleteValueAtIndex(index); \
+} \
+\
+bool TYPENAME::HasOwnProperty(String^ propertyName) \
+{ \
+    return object_->HasOwnProperty(propertyName); \
+} \
+\
+bool TYPENAME::HasProperty(String^ propertyName) \
+{ \
+    return object_->HasProperty(propertyName); \
+} \
+\
+JavaScriptObject^ TYPENAME::GetOwnPropertyDescriptor(String^ propertyName) \
+{ \
+    return object_->GetOwnPropertyDescriptor(propertyName); \
+} \
+\
+void TYPENAME::DefineProperty(String^ propertyName, IJavaScriptObject^ descriptor) \
+{ \
+    object_->DefineProperty(propertyName, descriptor); \
+} \
+\
+void TYPENAME::DefineProperties(IJavaScriptObject^ propertiesContainer) \
+{ \
+    object_->DefineProperties(propertiesContainer); \
+} \
+\
+JavaScriptArray^ TYPENAME::GetOwnPropertyNames() \
+{ \
+    return object_->GetOwnPropertyNames(); \
+} \
+JavaScriptArray^ TYPENAME::GetOwnPropertySymbols() \
+{ \
+    return object_->GetOwnPropertySymbols(); \
+} \
+\
+void TYPENAME::PreventExtensions() \
+{ \
+    object_->PreventExtensions(); \
+} \
+\
+void TYPENAME::Seal() \
+{ \
+    object_->Seal(); \
+} \
+\
+void TYPENAME::Freeze() \
+{ \
+    object_->Freeze(); \
+} \
+
+#endif // USE_EDGEMODE_JSRT / else
+
 #pragma endregion
 
 #define GetHandleFromVar(JS_VAR) (JsValueRef)(void*)((JS_VAR)->Handle)
-

@@ -447,10 +447,16 @@ void JavaScriptEngine::RemoveThunk(ExternalObjectFinalizeCallbackThunkData^ data
     punk->Release();
 }
 
-DateTime JavaScriptEngine::RunIdleWork()
+TimeSpan JavaScriptEngine::RunIdleWork()
 {
-    // TODO
-    return DateTime();
+    ClaimContext();
+
+    unsigned int nextTick;
+    EngCheckForFailure1(JsIdle(&nextTick));
+
+    auto result = TimeSpan();
+    result.Duration = nextTick;
+    return result;
 }
 
 bool JavaScriptEngine::HasGlobalVariable(String^ name)

@@ -224,9 +224,14 @@ namespace Microsoft
                 /// </summary>
                 JavaScriptSymbol^ CreateSymbol(String^ description);
                 /// <summary>
-                /// TODO
+                /// Tells the runtime to do any idle processing it need to do. 
                 /// </summary>
-                DateTime RunIdleWork();
+                /// <remarks><para>If idle processing has been enabled for the current runtime, calling <c>RunIdleWork</c> will inform the current runtime that the 
+                ///  host is idle and that the runtime can perform memory cleanup tasks.</para>
+                /// <para>RunIdleWork can also return the amount of time until there will be more idle work for the runtime to do.  Calling RunIdleWork before this 
+                ///  number of ticks has passed will do no work.</para>
+                /// </remarks>
+                TimeSpan RunIdleWork();
 
                 /// <summary>
                 /// Gets whether the global object has a property with the specified name.

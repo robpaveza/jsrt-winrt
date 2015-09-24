@@ -72,8 +72,11 @@ namespace Microsoft
                 }
 
                 /// <summary>
-                /// TODO: Document
+                /// Gets or sets whether the host will notify the script engine when it is idle.
                 /// </summary>
+                /// <remarks>By default, this property is false.  Setting it to true will notify the <c>JavaScriptEngine</c>s 
+                /// from this runtime that the host will be responsible for calling <c>RunIdleWork</c>, enabling it to have time
+                /// to manage memory.  Otherwise, the runtime will manage memory slightly more aggressively.</remarks>
                 property bool EnableIdleProcessing 
                 {
                     bool get() { return enableIdle_; }

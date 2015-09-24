@@ -48,11 +48,6 @@ namespace Microsoft
                 {
                     virtual bool get();
                 }
-                property Object^ ExternalData
-                {
-                    virtual Object^ get();
-                    virtual void set(Object^ data);
-                }
 
                 virtual bool IsPrototypeOf(IJavaScriptObject^ other);
                 virtual bool PropertyIsEnumerable(String^ propertyName);

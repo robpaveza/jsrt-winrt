@@ -12,10 +12,12 @@ ArrayBufferBackingStore::~ArrayBufferBackingStore()
     capacity_ = 0;
 }
 
-void ArrayBufferBackingStore::RuntimeClassInitialize(void* backing, uint32 capacity)
+HRESULT ArrayBufferBackingStore::RuntimeClassInitialize(void* backing, uint32 capacity)
 {
     backing_ = backing;
     capacity_ = capacity;
+
+    return S_OK;
 }
 
 IFACEMETHODIMP ArrayBufferBackingStore::get_Capacity(_Out_ uint32* value)
@@ -36,7 +38,7 @@ IFACEMETHODIMP ArrayBufferBackingStore::put_Length(_In_ uint32 value)
     return S_OK;
 }
 
-IFACEMETHODIMP ArrayBufferBackingStore::get_Buffer(_Out_ byte** value)
+IFACEMETHODIMP ArrayBufferBackingStore::Buffer(_Out_ byte** value)
 {
     *value = (byte*)backing_;
     return S_OK;

@@ -2,14 +2,15 @@
 #include "pch.h"
 #include "Common.h"
 
-using namespace Windows::Foundation;
-
 namespace Microsoft
 {
     namespace Scripting
     {
         namespace JavaScript
         {
+            /// <summary>
+            /// Represents a JavaScript <c>ArrayBuffer</c>.
+            /// </summary>
             [MD::WebHostHidden]
             public ref class JavaScriptArrayBuffer sealed :
                 public IJavaScriptObject
@@ -26,7 +27,17 @@ namespace Microsoft
                 JavaScriptArrayBuffer(JavaScriptPrimitiveValue^ primitive, JavaScriptObject^ object);
 
             public:
+                /// <summary>
+                /// Gets a reference to the underlying memory.
+                /// </summary>
+                /// <remarks>Calling this method does not prevent the ArrayBuffer from being 
+                /// garbage-collected.  Consequently, if you release the reference to the ArrayBuffer
+                /// and the engine doesn't have any references to it, the IBuffer will no longer
+                /// point to valid memory.  Use with discretion.</remarks>
                 Windows::Storage::Streams::IBuffer^ GetBackingMemory();
+                /// <summary>
+                /// Gets the byte length of the underlying memory store.
+                /// </summary>
                 property uint32 ByteLength
                 {
                     uint32 get();

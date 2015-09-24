@@ -1,18 +1,13 @@
 #pragma once
 #include "pch.h"
-#include <wrl.h>
-#include <wrl/implements.h>
-#include <robuffer.h>
 #include <windows.storage.streams.h>
+#include <robuffer.h>
+#include <wrl.h>
 
-using namespace Microsoft::WRL;
-using namespace ABI::Windows::Storage::Streams;
-using namespace Windows::Storage::Streams;
-
-class ArrayBufferBackingStore : public RuntimeClass<
-                                            RuntimeClassFlags<RuntimeClassType::WinRtClassicComMix>, 
+class ArrayBufferBackingStore : public Microsoft::WRL::RuntimeClass<
+                                            Microsoft::WRL::RuntimeClassFlags<Microsoft::WRL::RuntimeClassType::WinRtClassicComMix>,
                                             ABI::Windows::Storage::Streams::IBuffer, 
-                                            CloakedIid<IBufferByteAccess>>
+                                            Windows::Storage::Streams::IBufferByteAccess>
 {
     InspectableClass(InterfaceName_Windows_Storage_Streams_IBuffer, BaseTrust)
 
@@ -23,10 +18,10 @@ private:
 public:
     ArrayBufferBackingStore();
     virtual ~ArrayBufferBackingStore();
-    void RuntimeClassInitialize(void* ptr, uint32 capacity);
+    HRESULT RuntimeClassInitialize(void* ptr, uint32 capacity);
 
     STDMETHOD(get_Capacity)(_Out_ uint32* value);
     STDMETHOD(get_Length)(_Out_ uint32* value);
     STDMETHOD(put_Length)(_In_ uint32 value);
-    STDMETHOD(get_Buffer)(_Out_ byte** value);
+    STDMETHOD(Buffer)(_Out_ byte** value);
 };

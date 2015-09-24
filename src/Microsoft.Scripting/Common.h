@@ -58,6 +58,8 @@ namespace Microsoft
             ref class JavaScriptFunction;
             ref class JavaScriptSymbol;
             ref class JavaScriptEngineSymbolRegistry;
+            ref class JavaScriptArrayBuffer;
+            ref class JavaScriptTypedArray;
 
             /// <summary>
             /// Represents any JavaScript variable.  JavaScript primitives are only accessible via this interface.

@@ -1,11 +1,13 @@
 #include "pch.h"
+#include "ArrayBufferBacking.h"
+#include "Common.h"
 #include "JavaScriptArrayBuffer.h"
 #include "JavaScriptPrimitiveValue.h"
-#include "ArrayBufferBacking.h"
 #include "JavaScriptEngine.h"
-#include <wrl.h>
+#include "JavaScriptObject.h"
 
 using namespace Microsoft::Scripting::JavaScript;
+using namespace Microsoft::WRL;
 
 JavaScriptArrayBuffer::JavaScriptArrayBuffer(JavaScriptPrimitiveValue^ primitive, JavaScriptObject^ object):
     primitive_(primitive),
@@ -23,13 +25,12 @@ Windows::Storage::Streams::IBuffer^ JavaScriptArrayBuffer::GetBackingMemory()
     uint32 len;
     ObjCheckForFailure1(JsGetArrayBufferStorage(handle_, &buffer, &len));
 
-    /*ComPtr<ArrayBufferBackingStore> buf;
+    ComPtr<ArrayBufferBackingStore> buf;
     HRESULT hr = MakeAndInitialize<ArrayBufferBackingStore>(&buf, (void*)buffer, len);
     auto inspectable = reinterpret_cast<IInspectable*>(buf.Detach());
     auto result = reinterpret_cast<Windows::Storage::Streams::IBuffer^>(inspectable);
 
-    return result;*/
-    return nullptr;
+    return result;
 }
 
 uint32 JavaScriptArrayBuffer::ByteLength::get()
@@ -45,3 +46,5 @@ uint32 JavaScriptArrayBuffer::ByteLength::get()
     
     return len_;
 }
+
+DECLARE_JAVASCRIPT_OBJECT_IMPLEMENTATION(JavaScriptArrayBuffer)

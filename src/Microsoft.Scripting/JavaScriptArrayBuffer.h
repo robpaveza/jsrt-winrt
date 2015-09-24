@@ -43,7 +43,7 @@ namespace Microsoft
                     uint32 get();
                 }
 
-                DECLARE_JAVASCRIPT_OBJECT_VIRTUAL_MEMBERS()
+                DECLARE_JAVASCRIPT_OBJECT_VIRTUAL_MEMBERS(JavaScriptArrayBuffer)
             };
         }
     }

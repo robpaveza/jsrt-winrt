@@ -781,8 +781,6 @@ IJavaScriptObject^ JavaScriptEngine::CreateObjectFromHandle(JsValueRef handle)
     case JsObject:
     case JsError:
         return obj;
-    case JsSymbol:
-        return ref new JavaScriptSymbol(primitive, obj);
     case JsArrayBuffer:
         return ref new JavaScriptArrayBuffer(primitive, obj);
     case JsTypedArray:
@@ -794,6 +792,7 @@ IJavaScriptObject^ JavaScriptEngine::CreateObjectFromHandle(JsValueRef handle)
     case JsString:
     case JsNull:
     case JsUndefined:
+    case JsSymbol:
     default:
         throw ref new Exception(E_INVALIDARG);
     }

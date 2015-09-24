@@ -216,7 +216,7 @@ namespace Microsoft
                 /// <param name="littleEndian">True to store as little-endian; otherwise store as big-endian.</param>
                 void SetFloat64(uint32 byteOffset, float64 value, bool littleEndian);
 
-                DECLARE_JAVASCRIPT_OBJECT_VIRTUAL_MEMBERS()
+                DECLARE_JAVASCRIPT_OBJECT_VIRTUAL_MEMBERS(JavaScriptDataView)
             };
         }
     }

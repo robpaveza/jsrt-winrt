@@ -320,8 +320,9 @@ extern String^ EngineDisposed;
 #pragma region Delegation shorthand for IJavaScriptValue
 // Note: This depends on having a reference to the primitive as an object-level
 // field called `primitive_`.
-#define DECLARE_JAVASCRIPT_PRIMITIVE_VALUE_VIRTUAL_MEMBERS() \
+#define DECLARE_JAVASCRIPT_PRIMITIVE_VALUE_VIRTUAL_MEMBERS(TYPE_NAME) \
             public: \
+                virtual ~TYPE_NAME(); \
                 virtual String^ ToString() override; \
                 property JavaScriptValueType Type \
                 { \
@@ -344,6 +345,15 @@ extern String^ EngineDisposed;
                 } \
 
 #define DECLARE_JAVASCRIPT_PRIMITIVE_VALUE_IMPLEMENTATION(TYPENAME) \
+TYPENAME::~TYPENAME() \
+{ \
+    if (primitive_) \
+    { \
+        delete primitive_; \
+        primitive_ = nullptr; \
+        handle_ = JS_INVALID_REFERENCE; \
+    } \
+} \
 JavaScriptValueType TYPENAME::Type::get() \
 { \
     return primitive_->Type; \
@@ -375,7 +385,7 @@ bool TYPENAME::StrictEquals(IJavaScriptValue^ other) \
 #pragma region Delegation shorthand for IJavaScriptObject
 // Note: Expects an object-level JavaScriptObject^ implementation named `object_`.
 #ifdef USE_EDGEMODE_JSRT
-#define DECLARE_JAVASCRIPT_OBJECT_VIRTUAL_MEMBERS() \
+#define DECLARE_JAVASCRIPT_OBJECT_VIRTUAL_MEMBERS(TYPENAME) \
             public: \
                 property JavaScriptArray^ Keys \
                 { \
@@ -421,7 +431,7 @@ bool TYPENAME::StrictEquals(IJavaScriptValue^ other) \
                 virtual void PreventExtensions(); \
                 virtual void Seal(); \
                 virtual void Freeze(); \
-                DECLARE_JAVASCRIPT_PRIMITIVE_VALUE_VIRTUAL_MEMBERS() \
+                DECLARE_JAVASCRIPT_PRIMITIVE_VALUE_VIRTUAL_MEMBERS(TYPENAME) \
 
 #define DECLARE_JAVASCRIPT_OBJECT_IMPLEMENTATION(TYPENAME) \
 DECLARE_JAVASCRIPT_PRIMITIVE_VALUE_IMPLEMENTATION( TYPENAME ) \
@@ -558,7 +568,7 @@ void TYPENAME::Freeze() \
 } \
 
 #else 
-#define DECLARE_JAVASCRIPT_OBJECT_VIRTUAL_MEMBERS() \
+#define DECLARE_JAVASCRIPT_OBJECT_VIRTUAL_MEMBERS(TYPENAME) \
             public: \
                 property JavaScriptArray^ Keys \
                 { \
@@ -601,7 +611,7 @@ void TYPENAME::Freeze() \
                 virtual void PreventExtensions(); \
                 virtual void Seal(); \
                 virtual void Freeze(); \
-                DECLARE_JAVASCRIPT_PRIMITIVE_VALUE_VIRTUAL_MEMBERS() \
+                DECLARE_JAVASCRIPT_PRIMITIVE_VALUE_VIRTUAL_MEMBERS(TYPENAME) \
 
 #define DECLARE_JAVASCRIPT_OBJECT_IMPLEMENTATION(TYPENAME) \
 DECLARE_JAVASCRIPT_PRIMITIVE_VALUE_IMPLEMENTATION( TYPENAME ) \

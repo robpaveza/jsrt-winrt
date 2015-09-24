@@ -140,7 +140,7 @@ namespace Microsoft
                 /// </summary>
                 IJavaScriptValue^ ReduceRight(JavaScriptFunction^ aggregator, IJavaScriptValue^ initialValue);
 
-                DECLARE_JAVASCRIPT_OBJECT_VIRTUAL_MEMBERS()
+                DECLARE_JAVASCRIPT_OBJECT_VIRTUAL_MEMBERS(JavaScriptArray)
             };
         };
     };

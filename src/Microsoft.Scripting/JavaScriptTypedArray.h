@@ -90,7 +90,7 @@ namespace Microsoft
                 JavaScriptArray^ Keys();
                 */
 
-                DECLARE_JAVASCRIPT_OBJECT_VIRTUAL_MEMBERS()
+                DECLARE_JAVASCRIPT_OBJECT_VIRTUAL_MEMBERS(JavaScriptTypedArray)
             };
         }
     }

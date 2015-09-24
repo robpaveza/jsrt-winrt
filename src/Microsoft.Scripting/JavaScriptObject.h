@@ -156,7 +156,7 @@ namespace Microsoft
                 virtual void Freeze();
 #pragma endregion IJavaScriptObject virtual properties
 
-            DECLARE_JAVASCRIPT_PRIMITIVE_VALUE_VIRTUAL_MEMBERS()
+                DECLARE_JAVASCRIPT_PRIMITIVE_VALUE_VIRTUAL_MEMBERS(JavaScriptObject)
             
             };
         };

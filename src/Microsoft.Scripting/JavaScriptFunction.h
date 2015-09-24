@@ -49,7 +49,7 @@ namespace Microsoft
                 /// </summary>
                 IJavaScriptValue^ Call(IJavaScriptObject^ thisObject, IIterable<IJavaScriptValue^>^ arguments);
 
-                DECLARE_JAVASCRIPT_OBJECT_VIRTUAL_MEMBERS()
+                DECLARE_JAVASCRIPT_OBJECT_VIRTUAL_MEMBERS(JavaScriptFunction)
 
             };
         };

@@ -118,9 +118,16 @@ bool JavaScriptEngine::HasException::get()
     return has;
 }
 
+#ifdef USE_EDGEMODE_JSRT
 JavaScriptEngineSymbolRegistry^ JavaScriptEngine::Symbol::get()
 {
     return symbols_;
+}
+#endif // USE_EDGEMODE_JSRT
+
+IntPtr JavaScriptEngine::Handle::get()
+{
+    return IntPtr(context_);
 }
 
 JavaScriptEngine::JavaScriptEngine(JsContextRef context, JavaScriptRuntime^ runtime) :
@@ -140,7 +147,9 @@ JavaScriptEngine::JavaScriptEngine(JsContextRef context, JavaScriptRuntime^ runt
     this->Object_defineProperties_ = safe_cast<JavaScriptFunction^>(this->Object_ctor_->GetPropertyByName(L"defineProperties"));
 
     this->Array_prototype_ = (safe_cast<JavaScriptFunction^>(GetGlobalVariable(L"Array")))->Prototype;
+#ifdef USE_EDGEMODE_JSRT
     this->symbols_ = ref new JavaScriptEngineSymbolRegistry(this);
+#endif // USE_EDGEMODE_JSRT
 }
 
 void JavaScriptEngine::QueueRelease(JsValueRef handle)

@@ -116,6 +116,7 @@
     <Compile Include="UnitTest.cs" />
     <Compile Include="UnitTests\ArrayBufferTests.cs" />
     <Compile Include="UnitTests\RuntimeBaseTests.cs" />
+    <Compile Include="UnitTests\RuntimeTestsWithIdleWorkEnabled.cs" />
     <Compile Include="UnitTests\RuntimeTestsWithScriptInterruptEnabled.cs" />
     <Compile Include="UnitTests\SymbolsUnitTest.cs" />
     <Compile Include="UnitTests\TestHelloWorld.cs" />

@@ -23,7 +23,7 @@ namespace TestHost.UnitTests
 
         [TestMethod(ExpectedException = typeof(Exception))]
         [DebuggerStepThrough]
-        public void DisableExecutionResultsInException()
+        public void DisableExecutionSucceeds()
         {
             runtime_.DisableExecution();
             Assert.Succeeded(); // Got past DisableExecution thrown; see RuntimeBaseTests.DisableExecutionResultsInException

@@ -50,6 +50,13 @@ namespace TestHost.UnitTests
             runtime_.DisableExecution();
         }
 
+        [TestMethod(ExpectedException = typeof(Exception))]
+        [DebuggerStepThrough]
+        public void RunIdleWorkResultsInException()
+        {
+            engine_.RunIdleWork();
+        }
+
         public override void Cleanup()
         {
             engine_.Dispose();

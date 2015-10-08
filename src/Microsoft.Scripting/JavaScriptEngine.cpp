@@ -671,6 +671,13 @@ JavaScriptObject^ JavaScriptEngine::CreateUriError(String^ message)
 
     return CreateFirmObjectFromHandle(resultRef);
 }
+
+void JavaScriptEngine::InitializeWindowsRuntimeNamespace(String^ namespaceName)
+{
+    ClaimContext();
+
+    EngCheckForFailure1(JsProjectWinRTNamespace(namespaceName->Begin()));
+}
 #pragma endregion
 
 #pragma region internals

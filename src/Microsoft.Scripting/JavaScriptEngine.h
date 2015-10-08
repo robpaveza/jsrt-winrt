@@ -300,6 +300,10 @@ namespace Microsoft
                 /// Creates a <c>URIError</c> object.
                 /// </summary>
                 JavaScriptObject^ CreateUriError(String^ message);
+
+#if defined( _WINRT_DLL )
+                void InitializeWindowsRuntimeNamespace(String^ namespaceName);
+#endif // defined( _WINRT_DLL )
             };
         };
     };

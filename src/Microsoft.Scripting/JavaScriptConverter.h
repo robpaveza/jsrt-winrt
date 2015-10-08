@@ -51,6 +51,20 @@ namespace Microsoft
                 /// Converts a String to a JavaScript string.
                 /// </summary>
                 IJavaScriptValue^ FromString(String^ value);
+
+#if defined( _WINRT_DLL )
+                /// <summary>
+                /// Unwraps a JavaScript object to an Windows Runtime object.
+                /// </summary>
+                /// <remarks>The object must have originated from the Windows 
+                /// Runtime; that is, arbitrary JavaScript objects will not 
+                /// be convertible to Windows Runtime objects.</remarks>
+                Object^ ToWindowsRuntimeObject(IJavaScriptValue^ value);
+                /// <summary>
+                /// Creates a JavaScript value that is a projection of the passed in Windows Runtime object.
+                /// </summary>
+                IJavaScriptValue^ FromWindowsRuntimeObject(Object^ value);
+#endif // defined( _WINRT_DLL )
             };
         };
     };

@@ -163,3 +163,31 @@ IJavaScriptValue^ JavaScriptConverter::FromString(String^ value)
 
     return engine_->CreateValueFromHandle(strRef);
 }
+
+#if defined( _WINRT_DLL )
+
+Object^ JavaScriptConverter::ToWindowsRuntimeObject(IJavaScriptValue^ value)
+{
+    engine_->ClaimContext();
+
+    JsErrorCode jsErr;
+    IInspectable* pResult;
+
+    ObjCheckForFailure(JsObjectToInspectable(GetHandleFromVar(value), &pResult));
+
+    return reinterpret_cast<Object^>(pResult);
+}
+
+IJavaScriptValue^ JavaScriptConverter::FromWindowsRuntimeObject(Object^ value)
+{
+    engine_->ClaimContext();
+
+    JsValueRef valRef;
+    IInspectable* pVal = reinterpret_cast<IInspectable*>(value);
+
+    ObjCheckForFailure1(JsInspectableToObject(pVal, &valRef));
+
+    return engine_->CreateValueFromHandle(valRef);
+}
+
+#endif // defined( _WINRT_DLL )

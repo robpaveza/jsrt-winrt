@@ -115,6 +115,7 @@
     <Compile Include="TestRunner.cs" />
     <Compile Include="UnitTest.cs" />
     <Compile Include="UnitTests\ArrayBufferTests.cs" />
+    <Compile Include="UnitTests\ProjectionTests.cs" />
     <Compile Include="UnitTests\RuntimeBaseTests.cs" />
     <Compile Include="UnitTests\RuntimeTestsWithIdleWorkEnabled.cs" />
     <Compile Include="UnitTests\RuntimeTestsWithScriptInterruptEnabled.cs" />
@@ -151,6 +152,10 @@
     <ProjectReference Include="..\Microsoft.Scripting\Microsoft.Scripting.vcxproj">
       <Project>{b1cd9941-138d-4324-ab31-d7577bd3b288}</Project>
       <Name>Microsoft.Scripting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestLib\TestLib.csproj">
+      <Project>{2e71a229-b5ea-402d-92f1-5bb82d47ca16}</Project>
+      <Name>TestLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

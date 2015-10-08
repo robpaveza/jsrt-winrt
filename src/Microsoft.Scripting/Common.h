@@ -48,6 +48,14 @@ namespace Microsoft
                 Float64,
             };
 
+            [MD::WebHostHidden]
+            public enum class JavaScriptMemoryAllocationEventType
+            {
+                AllocationRequest = 0,
+                Free,
+                Failure,
+            };
+
             ref class JavaScriptRuntimeSettings;
             ref class JavaScriptRuntime;
             ref class JavaScriptEngine;

@@ -2,8 +2,17 @@
 #include "JavaScriptRuntime.h"
 #include "JavaScriptRuntimeSettings.h"
 #include "JavaScriptEngine.h"
+#include <assert.h>
 
 using namespace Microsoft::Scripting::JavaScript;
+
+#ifdef USE_EDGEMODE_JSRT
+JavaScriptRuntime::JavaScriptRuntime():
+    JavaScriptRuntime(ref new JavaScriptRuntimeSettings())
+{
+
+}
+#endif // USE_EDGEMODE_JSRT
 
 JavaScriptRuntime::JavaScriptRuntime(JavaScriptRuntimeSettings^ settings):
     settings_(settings)
@@ -25,13 +34,27 @@ JavaScriptRuntime::JavaScriptRuntime(JavaScriptRuntimeSettings^ settings):
 
     settings->SetUsed();
     this->runtime_ = handle;
+
+    InitMemoryCallback();
+}
+
+void JavaScriptRuntime::InitMemoryCallback()
+{
+    // no need to go about adding a ref to the thunk here - 
+    // this will stay alive as long as the runtime is alive.
+    allocationThunkData_ = ref new AllocationCallbackThunkData(this);
+
+    JsErrorCode errorCode = JsSetRuntimeMemoryAllocationCallback(runtime_, reinterpret_cast<void*>(allocationThunkData_), JavaScriptRuntime::MemoryCallbackThunk);
+    if (errorCode != JsNoError)
+        throw ref new Exception(E_FAIL);
 }
 
 JavaScriptRuntime::~JavaScriptRuntime()
 {
     if (runtime_ != JS_INVALID_RUNTIME_HANDLE)
     {
-        JsRelease(runtime_, nullptr);
+        JsSetRuntimeMemoryAllocationCallback(runtime_, nullptr, nullptr);
+        JsDisposeRuntime(runtime_);
         runtime_ = JS_INVALID_RUNTIME_HANDLE;
     }
 }
@@ -75,4 +98,36 @@ JavaScriptEngine^ JavaScriptRuntime::CreateEngine()
 #endif // !USE_EDGEMODE_JSRT
 
     return ref new JavaScriptEngine(engine, this);
+}
+
+bool CALLBACK JavaScriptRuntime::MemoryCallbackThunk(_In_opt_ void *callbackState, _In_ JsMemoryEventType allocationEvent, _In_ size_t allocationSize)
+{
+    try 
+    {
+        IInspectable* insp = reinterpret_cast<IInspectable*>(callbackState);
+        auto data = reinterpret_cast<AllocationCallbackThunkData^>(insp);
+        if (data == nullptr) 
+        {
+            assert(false);
+            // Todo: investigate cause of this
+            return true;
+        }
+
+        auto runtime = data->runtime;
+        assert(runtime != nullptr);
+
+        auto args = ref new JavaScriptMemoryAllocationEventArgs((JavaScriptMemoryAllocationEventType)allocationEvent, allocationSize);
+        runtime->MemoryChanging(runtime, args);
+        if (args->Cancel && args->IsCancelable)
+            return false;
+
+        return true;
+    }
+    catch (...)
+    {
+        ::OutputDebugString(L"Structured exception raised during callback to JavaScriptRuntime::MemoryChanging event.");
+        assert(false);
+
+        return true;
+    }
 }

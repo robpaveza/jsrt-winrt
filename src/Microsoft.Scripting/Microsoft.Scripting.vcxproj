@@ -30,7 +30,7 @@
     <ProjectGuid>{b1cd9941-138d-4324-ab31-d7577bd3b288}</ProjectGuid>
     <Keyword>WindowsRuntimeComponent</Keyword>
     <ProjectName>Microsoft.Scripting</ProjectName>
-    <RootNamespace>Microsoft_Scripting</RootNamespace>
+    <RootNamespace>Microsoft.Scripting</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <AppContainerApplication>true</AppContainerApplication>

@@ -50,11 +50,33 @@ namespace TestHost.UnitTests
             runtime_.DisableExecution();
         }
 
-        [TestMethod(ExpectedException = typeof(Exception))]
+        [TestMethod(ExpectedException = typeof(COMException))]
         [DebuggerStepThrough]
         public void RunIdleWorkResultsInException()
         {
             engine_.RunIdleWork();
+        }
+
+        [TestMethod]
+        public void ShouldSeeMemoryAllocationEvents()
+        {
+            Assert.ExpectSuccess();
+            runtime_.MemoryChanging += Runtime__MemoryChanging;
+
+            engine_.Execute(new Microsoft.Scripting.ScriptSource("[eval code]", @"(function(global) {
+    global.x = new Array(1048576);
+})(this);"));
+            engine_.Execute(new Microsoft.Scripting.ScriptSource("[eval code]", @"(function(global) {
+    delete global.x;
+})(this);"));
+
+            Assert.Done();
+        }
+
+        private void Runtime__MemoryChanging(object sender, JavaScriptMemoryAllocationEventArgs e)
+        {
+            Log.Message(string.Format("{0}: {1:x}", e.Type, e.Amount));
+            Assert.Succeeded();
         }
 
         public override void Cleanup()

@@ -21,7 +21,7 @@ namespace TestHost.UnitTests
             engine_ = runtime_.CreateEngine();
         }
 
-        [TestMethod(ExpectedException = typeof(Exception))]
+        [TestMethod(ExpectedException = typeof(COMException))]
         [DebuggerStepThrough]
         public void DisableExecutionSucceeds()
         {

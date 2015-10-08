@@ -9,6 +9,8 @@ namespace TestHost
     public class Asserter
     {
         private int count_;
+        private bool expectingSuccess_;
+
         public string TestName
         {
             get; set;
@@ -25,9 +27,23 @@ namespace TestHost
             throw new AssertionFailedException(TestName, message);
         }
         
+        public void ExpectSuccess()
+        {
+            expectingSuccess_ = true;
+        }
+
         public void Succeeded()
         {
             count_++;
+            expectingSuccess_ = false;
+        }
+
+        public void Done()
+        {
+            if (expectingSuccess_)
+            {
+                Failed("Expected success but didn't observe.");
+            }
         }
 
         #region AreEqual

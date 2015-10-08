@@ -12,6 +12,69 @@ namespace Microsoft
     {
         namespace JavaScript
         {
+            using namespace Windows::Foundation;
+
+            public ref class JavaScriptMemoryAllocationEventArgs sealed
+            {
+            private:
+                JavaScriptMemoryAllocationEventType type_;
+                bool cancelled_;
+                uint64 amount_;
+
+            internal:
+                JavaScriptMemoryAllocationEventArgs(JavaScriptMemoryAllocationEventType type, uint64 amount) :
+                    type_(type),
+                    cancelled_(false),
+                    amount_(amount)
+                {
+
+                }
+
+            public:
+                property JavaScriptMemoryAllocationEventType Type
+                {
+                    JavaScriptMemoryAllocationEventType get() { return type_; }
+                }
+
+                property uint64 Amount
+                {
+                    uint64 get() { return amount_; }
+                }
+
+                property bool Cancel
+                {
+                    bool get() { return cancelled_; }
+                    void set(bool value)
+                    {
+                        // once one event listener cancels, it's cancelled.
+                        cancelled_ |= value;
+                    }
+                }
+
+                property bool IsCancelable
+                {
+                    bool get() { return type_ == JavaScriptMemoryAllocationEventType::AllocationRequest; }
+                }
+            };
+
+            ref class AllocationCallbackThunkData sealed
+            {
+            private:
+                WeakReference runtime_;
+
+            public:
+                AllocationCallbackThunkData(JavaScriptRuntime^ rt) :
+                    runtime_(rt)
+                {
+
+                }
+
+                property JavaScriptRuntime^ runtime
+                {
+                    JavaScriptRuntime^ get() { return runtime_.Resolve<JavaScriptRuntime>(); }
+                }
+            };
+
             /// <summary>
             /// Provides the runtime and used for running JavaScript code.
             /// </summary>
@@ -22,7 +85,19 @@ namespace Microsoft
                 JavaScriptRuntimeSettings^ settings_;
                 JsRuntimeHandle runtime_;
 
+                AllocationCallbackThunkData^ allocationThunkData_;
+                static bool CALLBACK MemoryCallbackThunk(_In_opt_ void *callbackState, _In_ JsMemoryEventType allocationEvent, _In_ size_t allocationSize);
+                void InitMemoryCallback();
+
             public:
+#ifdef USE_EDGEMODE_JSRT
+                /// <summary>
+                /// Creates a new <c>JavaScriptRuntime</c> with the default settings.
+                /// </summary>
+                /// <remarks>Uses the default runtime behaviors.  Only available when targeting edge-mode JsRT.</remarks>
+                /// <seealso cref="JavaScriptRuntimeSettings" />
+                JavaScriptRuntime();
+#endif // USE_EDGEMODE_JSRT
                 /// <summary>
                 /// Creates a new <c>JavaScriptRuntime</c> with the given settings.
                 /// </summary>
@@ -102,6 +177,8 @@ namespace Microsoft
                         return IntPtr(runtime_);
                     }
                 }
+
+                event EventHandler<JavaScriptMemoryAllocationEventArgs^>^ MemoryChanging;
             };
         };
     };

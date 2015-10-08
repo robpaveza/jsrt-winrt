@@ -36,6 +36,14 @@ namespace Microsoft
                 /// </summary>
                 IJavaScriptValue^ FromDouble(double value);
                 /// <summary>
+                /// Converts a number to a 32-bit integer.  If the value is not a number value, it will be coerced.
+                /// </summary>
+                int32 ToInt32(IJavaScriptValue^ value);
+                /// <summary>
+                /// Converts an integer to a JavaScript number.
+                /// </summary>
+                IJavaScriptValue^ FromInt32(int32 value);
+                /// <summary>
                 /// Converts a JavaScript value to a String.  If the value is not a String value, it will be coerced.
                 /// </summary>
                 String^ ToString(IJavaScriptValue^ value);

@@ -83,6 +83,41 @@ IJavaScriptValue^ JavaScriptConverter::FromDouble(double value)
     return engine_->CreateValueFromHandle(dblRef);
 }
 
+int32 JavaScriptConverter::ToInt32(IJavaScriptValue^ value)
+{
+    if (value == nullptr)
+        throw ref new NullReferenceException();
+    engine_->ClaimContext();
+
+    JsValueRef intRef;
+    int32 result;
+    JsErrorCode jsErr;
+    if (value->Type == JavaScriptValueType::Number)
+    {
+        intRef = GetHandleFromVar(value);
+        ObjCheckForFailure(JsNumberToInt(intRef, &result));
+    }
+    else
+    {
+        ObjCheckForFailure(JsConvertValueToNumber(GetHandleFromVar(value), &intRef));
+        ObjCheckForFailure(JsNumberToInt(intRef, &result));
+        JsRelease(intRef, nullptr);
+    }
+
+    return result;
+}
+
+IJavaScriptValue^ JavaScriptConverter::FromInt32(int32 value)
+{
+    engine_->ClaimContext();
+
+    JsValueRef numRef;
+    JsErrorCode jsErr;
+    ObjCheckForFailure(JsIntToNumber(value, &numRef));
+
+    return engine_->CreateValueFromHandle(numRef);
+}
+
 String^ JavaScriptConverter::ToString(IJavaScriptValue^ value)
 {
     if (value == nullptr)

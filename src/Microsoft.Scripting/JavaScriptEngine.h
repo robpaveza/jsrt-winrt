@@ -263,6 +263,10 @@ namespace Microsoft
                 /// </summary>
                 JavaScriptFunction^ CreateFunction(JavaScriptCallableFunction^ nativeFunction);
                 /// <summary>
+                /// Creates a JavaScript Function with the specified name that represents the specified native function.
+                /// </summary>
+                JavaScriptFunction^ CreateFunction(JavaScriptCallableFunction^ nativeFunction, String^ name);
+                /// <summary>
                 /// If the engine is in an exception state, retrieves the JavaScript value that was thrown and clears the exception state.
                 /// </summary>
                 IJavaScriptValue^ GetAndClearException();

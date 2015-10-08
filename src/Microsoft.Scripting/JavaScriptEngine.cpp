@@ -544,6 +544,36 @@ JavaScriptFunction^ JavaScriptEngine::CreateFunction(JavaScriptCallableFunction^
     return CreateFunctionFromHandle(functionRef);
 }
 
+JavaScriptFunction^ JavaScriptEngine::CreateFunction(JavaScriptCallableFunction^ nativeFunction, String^ name)
+{
+    if (nativeFunction == nullptr)
+        throw ref new NullReferenceException();
+    if (name == nullptr || name->Length() == 0)
+        return CreateFunction(nativeFunction);
+
+    auto nameVal = converter_->FromString(name);
+    auto nameHandle = GetHandleFromVar(nameVal);
+
+    auto thunk = ref new NativeFunctionThunkData(nativeFunction, this);
+    auto punk = reinterpret_cast<IUnknown*>(thunk);
+
+    try
+    {
+        nativeFuncs_.insert(punk);
+        punk->AddRef();
+    }
+    catch (...)
+    {
+        // Nothing to do here, AddRef hasn't been called
+        throw ref new OutOfMemoryException();
+    }
+
+    JsValueRef functionRef;
+    EngCheckForFailure1(JsCreateNamedFunction(nameHandle, JavaScriptEngine::NativeCallbackThunk, punk, &functionRef));
+
+    return CreateFunctionFromHandle(functionRef);
+}
+
 IJavaScriptValue^ JavaScriptEngine::GetAndClearException()
 {
     ClaimContext();

@@ -13,5 +13,11 @@ namespace TestHost
         {
 
         }
+
+        public AssertionFailedException(string testName, string failureMode, Exception inner)
+            : base(string.Format("Test assertion failed:\n\tTest name: {0}\n\tDetails: {1}\n\tInner exception stack trace:\n{2}", testName, failureMode, inner))
+        {
+
+        }
     }
 }

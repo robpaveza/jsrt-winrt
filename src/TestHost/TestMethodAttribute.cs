@@ -16,5 +16,17 @@ namespace TestHost
             get;
             set;
         }
+
+        public bool RunWithDispatcher
+        {
+            get;
+            set;
+        }
+
+        public int MaxTimeoutMs
+        {
+            get;
+            set;
+        }
     }
 }

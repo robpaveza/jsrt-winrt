@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Microsoft.Scripting", "Microsoft.Scripting\Microsoft.Scripting.vcxproj", "{B1CD9941-138D-4324-AB31-D7577BD3B288}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHost", "TestHost\TestHost.csproj", "{7530D25E-CEFF-4A8C-A349-8D67174AF86A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2E71A229-B5EA-402D-92F1-5BB82D47CA16} = {2E71A229-B5EA-402D-92F1-5BB82D47CA16}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLib", "TestLib\TestLib.csproj", "{2E71A229-B5EA-402D-92F1-5BB82D47CA16}"
 EndProject

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TestHost
@@ -10,6 +11,7 @@ namespace TestHost
     {
         private int count_;
         private bool expectingSuccess_;
+        private bool waiting_, flagged_;
 
         public string TestName
         {
@@ -24,6 +26,8 @@ namespace TestHost
         public void Failed(string message)
         {
             count_++;
+            expectingSuccess_ = false;
+            ReleaseWait();
             throw new AssertionFailedException(TestName, message);
         }
         
@@ -36,6 +40,28 @@ namespace TestHost
         {
             count_++;
             expectingSuccess_ = false;
+            ReleaseWait();
+        }
+
+        public async Task WaitForSuccessOrFailure(int msTimeout)
+        {
+            // fishy
+            ExpectSuccess();
+            waiting_ = true;
+            int iterationCount = 10;
+            while (iterationCount > 0)
+            {
+                await Task.Delay(msTimeout / 10);
+
+                if (waiting_ && flagged_)
+                {
+                    waiting_ = flagged_ = false;
+                    break;
+                }
+                iterationCount--;
+            }
+
+            Failed("Timeout of " + msTimeout + "ms expired waiting for success or failure.");
         }
 
         public void Done()
@@ -44,6 +70,20 @@ namespace TestHost
             {
                 Failed("Expected success but didn't observe.");
             }
+        }
+
+        private void ReleaseWait()
+        {
+            var wh = WaitHandle;
+            if (wh != null)
+                wh.Set();
+            WaitHandle = null;
+        }
+
+        public EventWaitHandle WaitHandle
+        {
+            get;
+            set;
         }
 
         #region AreEqual

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -33,13 +34,14 @@ namespace TestLib
         {
             var tb = new TaskCompletionSource<int>();
             Timer timer = null;
-            var dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
+            var dispatcher = DispatchContainer.GlobalDispatcher;
             timer = new Timer(async (state) =>
             {
                 timer.Dispose();
                 await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
                     tb.SetResult(0);
+                    OnDone();
                 });
             }, null, 0, crispness_ * 1000);
             return tb.Task.AsAsyncAction();

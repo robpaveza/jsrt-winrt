@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Core;
 
-namespace TestHost
+namespace TestHost 
 {
     public class TestRunner
     {
@@ -22,7 +24,9 @@ namespace TestHost
 
         public Task Execute()
         {
-            return Task.Run(() =>
+            TestLib.DispatchContainer.GlobalDispatcher = vm_.Dispatcher;
+
+            return Task.Run(async () =>
             {
                 try
                 {
@@ -37,64 +41,21 @@ namespace TestHost
                         foreach (var methodDesc in GetTestMethods(testType))
                         {
                             test.Assert.TestName = methodDesc.Method.DeclaringType.Name + "." + methodDesc.Method.Name;
-                            test.Setup();
-
-                            try
+                            if (methodDesc.RunInDispatcherContext)
                             {
-                                methodDesc.Method.Invoke(test, new object[0]);
-
-                                if (methodDesc.ExpectedExceptionType != null)
+                                EventWaitHandle wh = new EventWaitHandle(false, EventResetMode.AutoReset);
+                                test.Assert.WaitHandle = wh;
+                                await vm_.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
                                 {
-                                    vm_.AddMessage(string.Format("Expected exception of type '{0}' but no exception was thrown.", methodDesc.ExpectedExceptionType.FullName));
-                                    testFailures++;
-                                }
-
-                                // success
+                                    testFailures = await ExecuteTest(test, testFailures, methodDesc);
+                                    wh.Set();
+                                });
+                                wh.WaitOne(methodDesc.Timeout);
                             }
-                            catch (TargetInvocationException tie)
+                            else
                             {
-                                var inner = tie.InnerException;
-                                var innerType = inner.GetType();
-                                if (innerType == typeof(AssertionFailedException))
-                                {
-                                    vm_.AddMessage(inner.ToString());
-                                    testFailures++;
-                                }
-                                else if (innerType != methodDesc.ExpectedExceptionType)
-                                {
-                                    // failure
-                                    vm_.AddMessage(inner.ToString());
-                                    testFailures++;
-                                }
-                                else
-                                {
-                                    // success
-                                    if (methodDesc.ExpectedExceptionType != null)
-                                        test.Assert.Succeeded();
-                                }
+                                testFailures = await ExecuteTest(test, testFailures, methodDesc);
                             }
-                            catch (AssertionFailedException ex)
-                            {
-                                vm_.AddMessage(ex.ToString());
-                                testFailures++;
-                            }
-                            catch (Exception ex)
-                            {
-                                if (ex.GetType() != methodDesc.ExpectedExceptionType)
-                                {
-                                    // failure
-                                    vm_.AddMessage(ex.ToString());
-                                    testFailures++;
-                                }
-                                else
-                                {
-                                    // success
-                                    if (methodDesc.ExpectedExceptionType != null)
-                                        test.Assert.Succeeded();
-                                }
-                            }
-
-                            test.Cleanup();
                         }
 
                         failureCount += testFailures;
@@ -112,6 +73,77 @@ namespace TestHost
                         Debugger.Break();
                 }
             });
+        }
+
+        private async Task<int> ExecuteTest(UnitTest test, int testFailures, TestExpectations methodDesc)
+        {
+            test.Setup();
+
+            try
+            {
+                if (methodDesc.Method.ReturnType == typeof(Task))
+                {
+                    Task result = methodDesc.Method.Invoke(test, new object[0]) as Task;
+                    await result;
+                }
+                else
+                {
+                    methodDesc.Method.Invoke(test, new object[0]);
+                }
+
+                if (methodDesc.ExpectedExceptionType != null)
+                {
+                    vm_.AddMessage(string.Format("Expected exception of type '{0}' but no exception was thrown.", methodDesc.ExpectedExceptionType.FullName));
+                    testFailures++;
+                }
+
+                // success
+            }
+            catch (TargetInvocationException tie)
+            {
+                var inner = tie.InnerException;
+                var innerType = inner.GetType();
+                if (innerType == typeof(AssertionFailedException))
+                {
+                    vm_.AddMessage(inner.ToString());
+                    testFailures++;
+                }
+                else if (innerType != methodDesc.ExpectedExceptionType)
+                {
+                    // failure
+                    vm_.AddMessage(new AssertionFailedException(test.Assert.TestName, "Threw unexpected exception", inner).ToString());
+                    testFailures++;
+                }
+                else
+                {
+                    // success
+                    if (methodDesc.ExpectedExceptionType != null)
+                        test.Assert.Succeeded();
+                }
+            }
+            catch (AssertionFailedException ex)
+            {
+                vm_.AddMessage(ex.ToString());
+                testFailures++;
+            }
+            catch (Exception ex)
+            {
+                if (ex.GetType() != methodDesc.ExpectedExceptionType)
+                {
+                    // failure
+                    vm_.AddMessage(ex.ToString());
+                    testFailures++;
+                }
+                else
+                {
+                    // success
+                    if (methodDesc.ExpectedExceptionType != null)
+                        test.Assert.Succeeded();
+                }
+            }
+
+            test.Cleanup();
+            return testFailures;
         }
 
         private Assembly GetTestingAssembly()
@@ -139,7 +171,9 @@ namespace TestHost
                         .Select(mi => new TestExpectations
                         {
                             Method = mi.Method,
-                            ExpectedExceptionType = mi.Attribute.ExpectedException
+                            ExpectedExceptionType = mi.Attribute.ExpectedException,
+                            RunInDispatcherContext = mi.Attribute.RunWithDispatcher,
+                            Timeout = mi.Attribute.MaxTimeoutMs,
                         });
         }
 
@@ -147,6 +181,8 @@ namespace TestHost
         {
             public MethodInfo Method;
             public Type ExpectedExceptionType;
+            public bool RunInDispatcherContext;
+            public int Timeout;
         }
     }
 }

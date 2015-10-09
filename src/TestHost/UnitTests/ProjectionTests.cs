@@ -13,16 +13,28 @@ namespace TestHost.UnitTests
         private JavaScriptRuntime runtime_;
         private JavaScriptEngine engine_;
 
-        [TestMethod]
-        public void ScriptCanAccessProjectedNamespace()
+        [TestMethod(MaxTimeoutMs = 30000, RunWithDispatcher = true)]
+        public async Task ScriptCanAccessProjectedNamespace()
         {
             engine_.SetGlobalVariable("echo", engine_.CreateFunction(Echo, "echo"));
             engine_.InitializeWindowsRuntimeNamespace("Windows");
             engine_.InitializeWindowsRuntimeNamespace("TestLib");
             engine_.Execute(new ScriptSource("[eval code]", @"(function(global) {
     echo(Object.keys(global).join(', '));
-    echo(JSON.stringify(global));
+    var str = JSON.stringify(global, null, 2);
+    //echo(str);
+
+    var toaster = new TestLib.Toaster();
+    toaster.addEventListener('done', function(e) {
+        echo('Toast completed');
+    });
+    toaster.toastAsync().then(function()
+    {
+        echo('toast promise done');
+    });
 })(this);"));
+
+            await Assert.WaitForSuccessOrFailure(30000);
         }
 
         private IJavaScriptValue Echo(JavaScriptEngine source, bool construct, IJavaScriptValue thisValue, IEnumerable<IJavaScriptValue> args)
@@ -30,6 +42,11 @@ namespace TestHost.UnitTests
             string arg = args.First().ToString();
             arg = arg.Replace("{", "{{").Replace("}", "}}");
             Log.Message(string.Format(arg, (object[])args.Skip(1).ToArray()));
+
+            if (arg == "toast promise done")
+            {
+                Assert.Succeeded();
+            }
             return source.UndefinedValue;
         }
 

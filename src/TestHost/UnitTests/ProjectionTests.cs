@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Popups;
 
 namespace TestHost.UnitTests
 {
@@ -16,7 +17,7 @@ namespace TestHost.UnitTests
         [TestMethod(MaxTimeoutMs = 30000, RunWithDispatcher = true)]
         public async Task ScriptCanAccessProjectedNamespace()
         {
-            engine_.SetGlobalVariable("echo", engine_.CreateFunction(Echo, "echo"));
+            engine_.SetGlobalVariable("echo", engine_.CreateFunction(EchoForProjectedNamespace, "echo"));
             engine_.InitializeWindowsRuntimeNamespace("Windows");
             engine_.InitializeWindowsRuntimeNamespace("TestLib");
             engine_.Execute(new ScriptSource("[eval code]", @"(function(global) {
@@ -36,8 +37,7 @@ namespace TestHost.UnitTests
 
             await Assert.WaitForSuccessOrFailure(30000);
         }
-
-        private IJavaScriptValue Echo(JavaScriptEngine source, bool construct, IJavaScriptValue thisValue, IEnumerable<IJavaScriptValue> args)
+        private IJavaScriptValue EchoForProjectedNamespace(JavaScriptEngine source, bool construct, IJavaScriptValue thisValue, IEnumerable<IJavaScriptValue> args)
         {
             string arg = args.First().ToString();
             arg = arg.Replace("{", "{{").Replace("}", "}}");
@@ -49,6 +49,61 @@ namespace TestHost.UnitTests
             }
             return source.UndefinedValue;
         }
+
+        [TestMethod(MaxTimeoutMs = 30000, RunWithDispatcher = true)]
+        public async Task ScriptCanAccessProjectedObjectWithoutNamespace()
+        {
+            engine_.SetGlobalVariable("echo", engine_.CreateFunction(EchoForNoNamespace, "echo"));
+            engine_.SetGlobalVariable("Dialog", engine_.CreateFunction(MessageDialog, "Dialog"));
+            Assert.ProjectToJavaScript(engine_, "Assert");
+            Log.ProjectToJavaScript(engine_);
+            engine_.InitializeWindowsRuntimeNamespace("Windows.UI.Popups");
+            engine_.Execute(new ScriptSource("[eval code]", @"(function(global) {
+    try
+    {
+        var y = Dialog('Hi there!  I should fail.');
+        Assert.failed('Should not be able to create a Dialog() instance without new()');
+    }
+    catch (e) 
+    {
+        Log.message('Caught error: ' + e.toString());
+        Assert.succeeded();
+    }
+
+    var dlg = new Dialog('Hello, world!  Click ""OK"" to make the test pass.');
+    dlg.showAsync().then(function() {
+        echo('callback completed');
+    });
+})(this);"));
+
+            await Assert.WaitForSuccessOrFailure(30000);
+        }
+
+        private IJavaScriptValue EchoForNoNamespace(JavaScriptEngine source, bool construct, IJavaScriptValue thisValue, IEnumerable<IJavaScriptValue> args)
+        {
+            string arg = args.First().ToString();
+
+            if (arg == "callback completed")
+            {
+                Assert.Succeeded();
+            }
+            return source.UndefinedValue;
+        }
+
+        private IJavaScriptValue MessageDialog(JavaScriptEngine source, bool construct, IJavaScriptValue thisValue, IEnumerable<IJavaScriptValue> args)
+        {
+            if (!construct)
+            {
+                var undefined = source.UndefinedValue;
+                source.SetException(source.CreateTypeError("Must call as a constructor."));
+                return undefined;
+            }
+
+            var dlg = new MessageDialog(args.First().ToString());
+            return source.Converter.FromWindowsRuntimeObject(dlg);
+        }
+
+        
 
         public override void Cleanup()
         {

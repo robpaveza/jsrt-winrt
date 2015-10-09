@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Scripting.JavaScript;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,62 @@ namespace TestHost
         public int Count
         {
             get { return count_; }
+        }
+
+        public void ProjectToJavaScript(JavaScriptEngine engine, string globalName)
+        {
+            var obj = engine.CreateObject(null);
+            obj.SetPropertyByName("failed", engine.CreateFunction((e, ctor, thisVal, args) =>
+            {
+                Failed(args.First().ToString());
+                return e.UndefinedValue;
+            }, "Assert.failed"));
+
+            obj.SetPropertyByName("succeeded", engine.CreateFunction((e, ctor, thisVal, args) =>
+            {
+                Succeeded();
+                return e.UndefinedValue;
+            }, "Assert.succeeded"));
+
+            obj.SetPropertyByName("done", engine.CreateFunction((e, ctor, thisVal, args) =>
+            {
+                Done();
+                return e.UndefinedValue;
+            }, "Assert.done"));
+
+            obj.SetPropertyByName("areEqual", engine.CreateFunction((e, ctor, thisVal, args) =>
+            {
+                var argArr = args.ToArray();
+                if (argArr.Length < 2)
+                    Failed("Unexpected number of parameters to Assert.areEqual");
+
+                var actual = argArr[0];
+                var expected = argArr[1];
+                bool strict = false;
+                if (argArr.Length > 2)
+                {
+                    strict = e.Converter.ToBoolean(argArr[2]);
+                }
+
+                if (strict)
+                {
+                    if (actual.StrictEquals(expected))
+                        Succeeded();
+                    else
+                        Failed(string.Format("[js strict equals] Expected '{0}' to be '{1}'", actual, expected));
+                }
+                else
+                {
+                    if (actual.SimpleEquals(expected))
+                        Succeeded();
+                    else
+                        Failed(string.Format("[js simple equals] Expected '{0} to be '{1}'", actual, expected));
+                }
+
+                return e.UndefinedValue;
+            }, "Assert.failed"));
+
+            engine.SetGlobalVariable(globalName, obj);
         }
 
         public void Failed(string message)

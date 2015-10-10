@@ -234,12 +234,14 @@ void JavaScriptEngine::ProcessError(JsErrorCode error)
     case JsErrorFatal:
         throw ref new Exception(E_FAIL);
 
+    case JsErrorAlreadyDebuggingContext:
+        throw ref new Exception(E_UNEXPECTED, ERROR_ALREADY_DEBUGGING);
+
     case JsErrorNoCurrentContext:
     case JsErrorHeapEnumInProgress:
     case JsErrorInProfileCallback:
     case JsErrorInThreadServiceCallback:
     case JsErrorCannotSerializeDebugScript:
-    case JsErrorAlreadyDebuggingContext:
         // unexpected to occur normally
         assert(false);
         throw ref new Exception(E_FAIL);
@@ -678,6 +680,13 @@ void JavaScriptEngine::InitializeWindowsRuntimeNamespace(String^ namespaceName)
 
     EngCheckForFailure1(JsProjectWinRTNamespace(namespaceName->Begin()));
 }
+
+void JavaScriptEngine::EnableDebugging()
+{
+    ClaimContext();
+
+    EngCheckForFailure1(JsStartDebugging());
+}
 #pragma endregion
 
 #pragma region internals
@@ -697,14 +706,6 @@ void JavaScriptEngine::ClaimContext()
         });
         releasedItems_.clear();
         releaseHold_.unlock();
-    }
-
-    try {
-        
-    }
-    catch (std::system_error er)
-    {
-        OutputDebugStringA(er.what());
     }
 }
 
@@ -881,6 +882,7 @@ void CALLBACK JavaScriptEngine::ExternalObjectFinalizeCallbackThunk(void* data)
 
 JsValueRef CALLBACK JavaScriptEngine::NativeCallbackThunk(JsValueRef callee, bool asConstructor, JsValueRef* args, unsigned short argCount, void* data)
 {
+    UNREFERENCED_PARAMETER(callee); // Callee and args[0] are the same
     if (!data)
         return JS_INVALID_REFERENCE;
 

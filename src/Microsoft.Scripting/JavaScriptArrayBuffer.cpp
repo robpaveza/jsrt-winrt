@@ -27,6 +27,9 @@ Windows::Storage::Streams::IBuffer^ JavaScriptArrayBuffer::GetBackingMemory()
 
     ComPtr<ArrayBufferBackingStore> buf;
     HRESULT hr = MakeAndInitialize<ArrayBufferBackingStore>(&buf, (void*)buffer, len);
+    if (FAILED(hr))
+        throw ref new Exception(hr);
+
     auto inspectable = reinterpret_cast<IInspectable*>(buf.Detach());
     auto result = reinterpret_cast<Windows::Storage::Streams::IBuffer^>(inspectable);
 

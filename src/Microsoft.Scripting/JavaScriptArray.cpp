@@ -83,7 +83,7 @@ int32 JavaScriptArray::Unshift(IIterable<IJavaScriptValue^>^ valuesToInsert)
         arg->Append(iter->Current);
         iter->MoveNext();
     }
-    return engine_->Converter->ToDouble(safe_cast<JavaScriptFunction^>(engine_->Array_prototype_->GetPropertyByName(L"unshift"))->Invoke(arg));
+    return engine_->Converter->ToInt32(safe_cast<JavaScriptFunction^>(engine_->Array_prototype_->GetPropertyByName(L"unshift"))->Invoke(arg));
 }
 
 void JavaScriptArray::Sort(JavaScriptFunction^ compareFunction)
@@ -166,7 +166,7 @@ int32 JavaScriptArray::IndexOf(IJavaScriptValue^ valueToFind)
     arg->Append(this);
     arg->Append(valueToFind);
 
-    return engine_->Converter->ToDouble((safe_cast<JavaScriptFunction^>(engine_->Array_prototype_->GetPropertyByName(L"indexOf"))->Invoke(arg)));
+    return engine_->Converter->ToInt32((safe_cast<JavaScriptFunction^>(engine_->Array_prototype_->GetPropertyByName(L"indexOf"))->Invoke(arg)));
 }
 
 int32 JavaScriptArray::IndexOf(IJavaScriptValue^ valueToFind, int32 startIndex)
@@ -176,7 +176,7 @@ int32 JavaScriptArray::IndexOf(IJavaScriptValue^ valueToFind, int32 startIndex)
     arg->Append(valueToFind);
     arg->Append(engine_->Converter->FromDouble(startIndex));
 
-    return engine_->Converter->ToDouble((safe_cast<JavaScriptFunction^>(engine_->Array_prototype_->GetPropertyByName(L"indexOf"))->Invoke(arg)));
+    return engine_->Converter->ToInt32((safe_cast<JavaScriptFunction^>(engine_->Array_prototype_->GetPropertyByName(L"indexOf"))->Invoke(arg)));
 }
 
 int32 JavaScriptArray::LastIndexOf(IJavaScriptValue^ valueToFind)
@@ -185,7 +185,7 @@ int32 JavaScriptArray::LastIndexOf(IJavaScriptValue^ valueToFind)
     arg->Append(this);
     arg->Append(valueToFind);
 
-    return engine_->Converter->ToDouble((safe_cast<JavaScriptFunction^>(engine_->Array_prototype_->GetPropertyByName(L"lastIndexOf"))->Invoke(arg)));
+    return engine_->Converter->ToInt32((safe_cast<JavaScriptFunction^>(engine_->Array_prototype_->GetPropertyByName(L"lastIndexOf"))->Invoke(arg)));
 }
 
 int32 JavaScriptArray::LastIndexOf(IJavaScriptValue^ valueToFind, int32 lastIndex)
@@ -195,7 +195,7 @@ int32 JavaScriptArray::LastIndexOf(IJavaScriptValue^ valueToFind, int32 lastInde
     arg->Append(valueToFind);
     arg->Append(engine_->Converter->FromDouble(lastIndex));
 
-    return engine_->Converter->ToDouble((safe_cast<JavaScriptFunction^>(engine_->Array_prototype_->GetPropertyByName(L"lastIndexOf"))->Invoke(arg)));
+    return engine_->Converter->ToInt32((safe_cast<JavaScriptFunction^>(engine_->Array_prototype_->GetPropertyByName(L"lastIndexOf"))->Invoke(arg)));
 }
 
 void JavaScriptArray::ForEach(JavaScriptFunction^ callee)

@@ -14,3 +14,4 @@ String^ ERROR_PROPERTY_NOT_SYMBOL = L"Attempted to get a Symbol for a property n
 String^ ERROR_PROPERTY_NOT_STRING = L"Attempted to get a property name that is actually a Symbol.";
 String^ ERROR_COMPILATION_FAILED = L"A script failed to compile, probably due to a syntax error.";
 String^ ERROR_SCRIPT_ATTEMPTED_EVAL = L"A script was terminated because it tried to use eval or Function() and eval was disabled.";
+String^ ERROR_ALREADY_DEBUGGING = L"The script engine was already in debugging mode.";

@@ -2,6 +2,7 @@
 #include "JavaScriptConverter.h"
 #include "JavaScriptEngine.h"
 #include "JavaScriptPrimitiveValue.h"
+#include <assert.h>
 
 using namespace Microsoft::Scripting::JavaScript;
 
@@ -133,7 +134,8 @@ String^ JavaScriptConverter::ToString(IJavaScriptValue^ value)
     {
         strRef = GetHandleFromVar(value);
         ObjCheckForFailure(JsStringToPointer(strRef, &str, &strLen));
-        result = ref new String(str, strLen);
+        assert(strLen < UINT_MAX);
+        result = ref new String(str, (uint32)strLen);
     }
     else if (value->Type == JavaScriptValueType::Symbol)
     {
@@ -146,7 +148,8 @@ String^ JavaScriptConverter::ToString(IJavaScriptValue^ value)
     {
         ObjCheckForFailure(JsConvertValueToString(GetHandleFromVar(value), &strRef));
         ObjCheckForFailure(JsStringToPointer(strRef, &str, &strLen));
-        result = ref new String(str, strLen);
+        assert(strLen < UINT_MAX);
+        result = ref new String(str, (uint32)strLen);
         JsRelease(strRef, nullptr);
     }
 

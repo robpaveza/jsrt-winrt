@@ -302,8 +302,27 @@ namespace Microsoft
                 JavaScriptObject^ CreateUriError(String^ message);
 
 #if defined( _WINRT_DLL )
+                /// <summary>
+                /// Enables Windows Runtime projection of a particular namespace to the JavaScript engine.
+                /// </summary>
                 void InitializeWindowsRuntimeNamespace(String^ namespaceName);
 #endif // defined( _WINRT_DLL )
+
+                /// <summary>
+                /// Starts debugging in the current engine.
+                /// </summary>
+                /// <remarks>
+                ///     <para>
+                ///     The host should make sure that CoInitializeEx is called with COINIT_MULTITHREADED or COINIT_APARTMENTTHREADED at least once before using this API.
+                ///     </para>
+                ///     <para>
+                ///     It is not possible to back out debugging on an app; as a result, you should only enable debugging within debug modes, or else performance 
+                ///     may suffer.  To debug your application, launch or attach your app under Visual Studio, choosing Script debugging as the debug target (or 
+                ///     Native with Script).  When debugging your script, you can't set breakpoints in your source files; you must do so only after the script file
+                ///     has been enumerated in the engine, or optionally, you can use the <c>debugger</c> keyword to trigger a programmatic breakpoint.
+                ///     </para>
+                /// </remarks>
+                void EnableDebugging();
             };
         };
     };

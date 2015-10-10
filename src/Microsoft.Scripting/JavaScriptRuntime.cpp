@@ -2,6 +2,7 @@
 #include "JavaScriptRuntime.h"
 #include "JavaScriptRuntimeSettings.h"
 #include "JavaScriptEngine.h"
+#include "Errors.h"
 #include <assert.h>
 
 using namespace Microsoft::Scripting::JavaScript;
@@ -95,6 +96,7 @@ JavaScriptEngine^ JavaScriptRuntime::CreateEngine()
     auto err = JsCreateContext(runtime_, nullptr, &engine);
 #else
     auto err = JsCreateContext(runtime_, &engine);
+    ProcessRuntimeError(err);
 #endif // !USE_EDGEMODE_JSRT
 
     return ref new JavaScriptEngine(engine, this);

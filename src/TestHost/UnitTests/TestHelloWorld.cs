@@ -23,10 +23,9 @@ namespace TestHost.UnitTests
         public void CallToEchoShouldResultInOneCall()
         {
             engine_.SetGlobalFunction("echo", Echo);
-            var fn = engine_.EvaluateScriptText(@"(function() { 
+            engine_.Execute(new Microsoft.Scripting.ScriptSource("[eval code]", @"(function() { 
     echo('{0}, {1}!', 'Hello', 'world from JsRT!');
-})();");
-            fn.Invoke(Enumerable.Empty<IJavaScriptValue>());
+})();"));
         }
 
         private IJavaScriptValue Echo(JavaScriptEngine source, bool construct, IJavaScriptValue thisValue, IEnumerable<IJavaScriptValue> args)

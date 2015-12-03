@@ -1,4 +1,6 @@
-﻿# Compiled Object files
+﻿*.lock.json
+
+# Compiled Object files
 *.slo
 *.lo
 *.o

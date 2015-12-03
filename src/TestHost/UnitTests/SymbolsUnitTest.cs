@@ -24,11 +24,11 @@ namespace TestHost.UnitTests
         [TestMethod]
         public void SymbolToStringFromScriptShouldEqualSymbolPlusNameInParentheses()
         {
-            var fn = engine_.EvaluateScriptText(@"(function() {
+            var res = engine_.Execute(new Microsoft.Scripting.ScriptSource("[eval code]", @"(function() {
     var x = Symbol('foo');
     return x.toString();
-})();");
-            Assert.AreEqual(fn.Invoke(Enumerable.Empty<IJavaScriptValue>()).ToString(), "Symbol(foo)");
+})();"));
+            Assert.AreEqual(res.ToString(), "Symbol(foo)");
         }
 
         [TestMethod(ExpectedException = typeof(NotImplementedException))]
@@ -48,7 +48,7 @@ namespace TestHost.UnitTests
             engine_.SetGlobalFunction("echo", (eng, ctor, thisObj, args) =>
             {
                 Log.Message(string.Format(args.First().ToString(), (object[])args.Skip(1).ToArray()));
-                Assert.AreEqual(args.First().ToString(), "length, prototype, name, hasInstance, iterator, unscopables, for, keyFor, caller, arguments");
+                Assert.AreEqual(args.First().ToString(), "length, prototype, name, iterator, species, unscopables, for, keyFor, caller, arguments");
                 return eng.UndefinedValue;
             });
 

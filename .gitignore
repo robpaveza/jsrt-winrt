@@ -1,4 +1,4 @@
-﻿*.lock.json
+﻿project.lock.json
 
 # Compiled Object files
 *.slo

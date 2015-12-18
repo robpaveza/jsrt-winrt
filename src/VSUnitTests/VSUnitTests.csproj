@@ -102,6 +102,8 @@
     <Compile Include="ProjectionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RuntimeBaseTests.cs" />
+    <Compile Include="RuntimeTestsWithIdleWorkEnabled.cs" />
+    <Compile Include="RuntimeTestsWithScriptInterruptEnabled.cs" />
     <Compile Include="SymbolsUnitTest.cs" />
     <Compile Include="TestHelloWorld.cs" />
     <Compile Include="UnitTestApp.xaml.cs">

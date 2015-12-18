@@ -71,7 +71,8 @@ namespace VSUnitTests
         [DebuggerStepThrough]
         public void RunIdleWorkResultsInException()
         {
-            TestHelper.ExpectedException<COMException>(() => engine_.RunIdleWork());
+            // UNDONE: original test checked for COMException, is Exception OK?
+            TestHelper.ExpectedException<Exception>(() => engine_.RunIdleWork());
         }
 
         [TestMethod]

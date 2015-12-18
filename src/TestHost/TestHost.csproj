@@ -92,35 +92,16 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <Content Include="ApplicationInsights.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Asserter.cs" />
-    <Compile Include="AssertionFailedException.cs" />
-    <Compile Include="HomeViewModel.cs" />
-    <Compile Include="IBufferByteAccess.cs" />
-    <Compile Include="Log.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestAssertFailedException.cs" />
-    <Compile Include="TestMethodAttribute.cs" />
-    <Compile Include="TestRunner.cs" />
-    <Compile Include="UnitTest.cs" />
-    <Compile Include="UnitTests\ArrayBufferTests.cs" />
-    <Compile Include="UnitTests\ProjectionTests.cs" />
-    <Compile Include="UnitTests\RuntimeBaseTests.cs" />
-    <Compile Include="UnitTests\RuntimeTestsWithIdleWorkEnabled.cs" />
-    <Compile Include="UnitTests\RuntimeTestsWithScriptInterruptEnabled.cs" />
-    <Compile Include="UnitTests\SymbolsUnitTest.cs" />
-    <Compile Include="UnitTests\TestHelloWorld.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

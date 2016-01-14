@@ -38,5 +38,6 @@
 *.user
 *.filters
 Debug/
+Release/
 obj/
 .vs/

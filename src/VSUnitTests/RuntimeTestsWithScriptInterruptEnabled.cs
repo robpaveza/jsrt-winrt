@@ -1,4 +1,5 @@
 ﻿using Microsoft.Scripting.JavaScript;
+using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,31 +8,38 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestHost.UnitTests
+namespace VSUnitTests
 {
-    public class RuntimeTestsWithScriptInterruptEnabled : UnitTest
+    [TestClass]
+    public class RuntimeTestsWithScriptInterruptEnabled
     {
         private JavaScriptRuntime runtime_;
         private JavaScriptEngine engine_;
 
-        public override void Setup()
+        [TestInitialize]
+        public void Setup()
         {
             var settings = new JavaScriptRuntimeSettings() { AllowScriptInterrupt = true, };
             runtime_ = new JavaScriptRuntime(settings);
             engine_ = runtime_.CreateEngine();
         }
 
-        [TestMethod(ExpectedException = typeof(COMException))]
+        [TestMethod]
         [DebuggerStepThrough]
         public void DisableExecutionSucceeds()
         {
             runtime_.DisableExecution();
-            Assert.Succeeded(); // Got past DisableExecution thrown; see RuntimeBaseTests.DisableExecutionResultsInException
+            Assert.IsTrue(true); // Got past DisableExecution thrown; see RuntimeBaseTests.DisableExecutionResultsInException
 
-            engine_.EvaluateScriptText(@"(function() {})();");
+            // UNDONE: original test checked for COMException, is Exception OK?
+            TestHelper.ExpectedException<Exception>(() =>
+            {
+                engine_.EvaluateScriptText(@"(function() {})();");
+            });
         }
 
-        public override void Cleanup()
+        [TestCleanup]
+        public void Cleanup()
         {
             engine_.Dispose();
             engine_ = null;

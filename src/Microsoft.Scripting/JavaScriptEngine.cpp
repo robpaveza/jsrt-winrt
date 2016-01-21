@@ -348,7 +348,13 @@ IJavaScriptValue^ JavaScriptEngine::Execute(ScriptSource^ source)
     auto id = source->SourceContextId;
 
     JsValueRef resultRef;
-    EngCheckForFailure1(JsRunScript(text->Begin(), id, loc->Begin(), &resultRef));
+
+    JsErrorCode jsErr = (JsRunScript(text->Begin(), id, loc->Begin(), &resultRef));
+    if (JsNoError != jsErr) 
+    {
+        this->ProcessError(jsErr);
+        return nullptr;
+    }
 
     return CreateValueFromHandle(resultRef);
 }
@@ -404,6 +410,12 @@ JavaScriptSymbol^ JavaScriptEngine::CreateSymbol(String^ description)
     return CreateSymbolFromHandle(resultRef);
 }
 
+IJavaScriptValue^ JavaScriptEngine::CreateWindowsRuntimeObject(Object^ value)
+{
+    ClaimContext();
+
+    return converter_->FromWindowsRuntimeObject(value);
+}
 JavaScriptObject^ JavaScriptEngine::CreateExternalObject(Object^ externalData, JavaScriptExternalObjectFinalizeCallback^ finalizer)
 {
     if (externalData != nullptr && finalizer == nullptr)

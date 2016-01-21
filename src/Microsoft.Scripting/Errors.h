@@ -56,7 +56,7 @@ extern String^ ERROR_ALREADY_DEBUGGING;
 
 inline void ProcessRuntimeError(JsErrorCode error)
 {
-    assert(error != JsNoError);
+    if (error == JsNoError) { return; }
 
     switch (error)
     {

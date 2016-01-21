@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Scripting.JavaScript;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,6 +26,19 @@ namespace TestHost
         public MainPage()
         {
             this.InitializeComponent();
+
+            eval.Click += Eval_Click;
+        }
+
+        private void Eval_Click(object sender, RoutedEventArgs e)
+        {
+            var settings = new JavaScriptRuntimeSettings();
+            var runtime = new JavaScriptRuntime(settings);
+            var engine = runtime.CreateEngine();
+
+            var result = engine.Execute(new Microsoft.Scripting.ScriptSource("[eval code]", input.Text));
+
+            output.Text = result.ToString();
         }
     }
 }

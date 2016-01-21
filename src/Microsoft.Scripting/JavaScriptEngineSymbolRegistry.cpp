@@ -18,10 +18,11 @@ JavaScriptEngineSymbolRegistry::JavaScriptEngineSymbolRegistry(JavaScriptEngine^
 
     iterator_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"iterator"));
 
+    /*
     hasInstance_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"hasInstance"));
     unscopables_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"unscopables"));
 
-    /*match_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"match"));
+    match_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"match"));
     replace_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"replace"));
     search_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"search"));
     split_ = safe_cast<JavaScriptSymbol^>(ctor_->GetPropertyByName(L"split"));

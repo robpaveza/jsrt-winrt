@@ -1,4 +1,6 @@
-﻿# Compiled Object files
+﻿project.lock.json
+
+# Compiled Object files
 *.slo
 *.lo
 *.o
@@ -36,5 +38,6 @@
 *.user
 *.filters
 Debug/
+Release/
 obj/
 .vs/

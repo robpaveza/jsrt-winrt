@@ -1,14 +1,16 @@
 ﻿using Microsoft.Scripting;
 using Microsoft.Scripting.JavaScript;
+using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestHost.UnitTests
+namespace VSUnitTests
 {
-    public class ArrayBufferTests : UnitTest
+    [TestClass]
+    public class ArrayBufferTests
     {
         private JavaScriptRuntime runtime_;
         private JavaScriptEngine engine_;
@@ -16,7 +18,8 @@ namespace TestHost.UnitTests
         private JavaScriptTypedArray typedArray_;
         private JavaScriptDataView dataView_;
 
-        public override void Setup()
+        [TestInitialize]
+        public void Setup()
         {
             runtime_ = new JavaScriptRuntime(new JavaScriptRuntimeSettings());
             engine_ = runtime_.CreateEngine();
@@ -35,12 +38,12 @@ namespace TestHost.UnitTests
         [TestMethod]
         public void DefaultPropertiesOfArrayBufferTypesAreCorrect()
         {
-            Assert.AreEqual(buffer_.ByteLength, 1024);
-            Assert.AreEqual(typedArray_.ByteLength, 1024);
-            Assert.AreEqual(typedArray_.ByteOffset, 0);
+            Assert.AreEqual((int)buffer_.ByteLength, (int)1024);
+            Assert.AreEqual((int)typedArray_.ByteLength, (int)1024);
+            Assert.AreEqual((int)typedArray_.ByteOffset, (int)0);
             Assert.AreEqual((int)typedArray_.ArrayType, (int)JavaScriptTypedArrayType.Uint8Clamped);
-            Assert.AreEqual(dataView_.ByteLength, 1023);
-            Assert.AreEqual(dataView_.ByteOffset, 1);
+            Assert.AreEqual((int)dataView_.ByteLength, (int)1023);
+            Assert.AreEqual((int)dataView_.ByteOffset, (int)1);
         }
 
         [TestMethod]
@@ -57,7 +60,8 @@ namespace TestHost.UnitTests
             Assert.AreEqual(dataView_.GetInt16(1, false), (short)0x0201);
         }
 
-        public override void Cleanup()
+        [TestCleanup]
+        public void Cleanup()
         {
             dataView_ = null;
             typedArray_ = null;

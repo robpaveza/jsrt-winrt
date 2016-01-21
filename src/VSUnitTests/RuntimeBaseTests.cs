@@ -1,4 +1,5 @@
 ﻿using Microsoft.Scripting.JavaScript;
+using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,14 +8,32 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestHost.UnitTests
+namespace VSUnitTests
 {
-    public class RuntimeBaseTests : UnitTest
+    public static class TestHelper 
+    {
+        public static void ExpectedException<T>(Action a) where T :Exception
+        {
+            try
+            {
+                a();
+                Assert.Fail("Expected exception");
+            }
+            catch (T exception)
+            {
+                Assert.IsNotNull(exception);
+            }
+        }
+    }
+
+    [TestClass]
+    public class RuntimeBaseTests 
     {
         private JavaScriptRuntime runtime_;
         private JavaScriptEngine engine_;
 
-        public override void Setup()
+        [TestInitialize]
+        public void Setup()
         {
             var settings = new JavaScriptRuntimeSettings();
             runtime_ = new JavaScriptRuntime(settings);
@@ -26,41 +45,39 @@ namespace TestHost.UnitTests
         {
             engine_.RuntimeExceptionRaised += (s, e) =>
             {
-                Assert.Failed("No runtime exception should have been raised.");
+                Assert.Fail("No runtime exception should have been raised.");
             };
             var baseline = runtime_.RuntimeMemoryUsage;
-            var func = engine_.EvaluateScriptText(@"(function(global) {
+            engine_.Execute(new Microsoft.Scripting.ScriptSource("[eval code]", @"(function(global) {
     var x = [];
     for (var i = 0; i < 1024 * 256; i++) {
         x[i] = i;
     }
 
     global['x'] = x;
-})(this);");
+})(this);"));
 
-            func.Invoke(Enumerable.Empty<IJavaScriptValue>());
-
-            Assert.IsGreaterThan(runtime_.RuntimeMemoryUsage, baseline);
+            Assert.IsTrue(runtime_.RuntimeMemoryUsage > baseline);
         }
 
-        [TestMethod(ExpectedException = typeof(COMException))]
+        [TestMethod]
         [DebuggerStepThrough]
         public void DisableExecutionResultsInException()
         {
-            runtime_.DisableExecution();
+            TestHelper.ExpectedException<COMException>(() => runtime_.DisableExecution());
         }
 
-        [TestMethod(ExpectedException = typeof(COMException))]
+        [TestMethod]
         [DebuggerStepThrough]
         public void RunIdleWorkResultsInException()
         {
-            engine_.RunIdleWork();
+            // UNDONE: original test checked for COMException, is Exception OK?
+            TestHelper.ExpectedException<Exception>(() => engine_.RunIdleWork());
         }
 
         [TestMethod]
         public void ShouldSeeMemoryAllocationEvents()
         {
-            Assert.ExpectSuccess();
             runtime_.MemoryChanging += Runtime__MemoryChanging;
 
             engine_.Execute(new Microsoft.Scripting.ScriptSource("[eval code]", @"(function(global) {
@@ -70,16 +87,17 @@ namespace TestHost.UnitTests
     delete global.x;
 })(this);"));
 
-            Assert.Done();
+            Assert.IsTrue(true, "run to completion is good!");
         }
 
         private void Runtime__MemoryChanging(object sender, JavaScriptMemoryAllocationEventArgs e)
         {
-            Log.Message(string.Format("{0}: {1:x}", e.Type, e.Amount));
-            Assert.Succeeded();
+            Debug.WriteLine(string.Format("{0}: {1:x}", e.Type, e.Amount));
+            Assert.IsTrue(true, "run to completion is good!");
         }
 
-        public override void Cleanup()
+        [TestCleanup]
+        public void Cleanup()
         {
             engine_.Dispose();
             engine_ = null;

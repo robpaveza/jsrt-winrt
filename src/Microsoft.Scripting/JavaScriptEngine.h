@@ -220,6 +220,10 @@ namespace Microsoft
                 /// </summary>
                 JavaScriptObject^ CreateExternalObject(Object^ externalData, JavaScriptExternalObjectFinalizeCallback^ finalizeCallback);
                 /// <summary>
+                /// Creates an JavaScript Object that can be associated with a host object.
+                /// </summary>
+                IJavaScriptValue^ CreateWindowsRuntimeObject(Object^ object);
+                /// <summary>
                 /// Creates a JavaScript Symbol value with an optional description.
                 /// </summary>
                 JavaScriptSymbol^ CreateSymbol(String^ description);
